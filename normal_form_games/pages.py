@@ -5,11 +5,12 @@ from .models import Constants
 
 class Choice(Page):
     form_model = 'player'
-    form_fields = ['penny_side', 'hidden_input']
+    form_fields = ['choice']
 
     def vars_for_template(self):
+        prev = self.player.in_previous_rounds()
         return {
-            'player_in_previous_rounds': self.player.in_previous_rounds(),
+            'last_choice': prev[-1].choice + 1 if prev else False
         }
 
 
@@ -24,6 +25,7 @@ class ResultsSummary(Page):
 
     def vars_for_template(self):
         player_in_all_rounds = self.player.in_all_rounds()
+        last_round = player_in_all_rounds[-1]
 
         return {
             'total_payoff': sum(
