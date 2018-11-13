@@ -56,6 +56,7 @@ function runGame(target, game) {
     $('.nfg-cell').addClass('unchosen');
     for (let i in game) {
       if (i == row) {
+      // Mark chosen row
         $(`.nfg-row-${i}`)
           .removeClass('unchosen')
           .addClass('chosen')
