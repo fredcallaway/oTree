@@ -1,0 +1,42 @@
+.centered {
+    text-align: center;
+}
+body {
+    font-family: Avenir;
+    font-size: 14pt;
+}
+.target {
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.btn {
+    margin-top: 10px;
+}
+.game-table {
+    margin: auto;
+    font-size: 20pt;
+}
+rowpay {
+    color: #fc8034;
+}
+colpay {
+    color: #4a74ff;
+}
+tr.game-row:hover {
+    background: #ddd;
+}
+.chosen {
+    background: #ddd;
+    opacity: 1;
+}
+.unchosen{
+    opacity: 0.4 !important;
+}
+.unchosen > payouts {
+    opacity: 0.4 !important;
+}
+#game-msg {
+    margin-top: 20px;
+}

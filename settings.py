@@ -9,15 +9,26 @@ SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 1.00,
     'participation_fee': 0.00,
     'doc': "",
+    "num_games": 50,
+    "seconds_per_game": 15,
 }
 
 SESSION_CONFIGS = [
     {
         'name': 'normal_form_games',
         'display_name': "Normal Form Games",
-        'num_demo_participants': 4,
+        'num_demo_participants': 2,
         'app_sequence': [
+            'lobby',
             'normal_form_games',
+        ],
+    },
+    {
+        'name': 'lobby',
+        'display_name': "Lobby",
+        'num_demo_participants': 1,
+        'app_sequence': [
+            'lobby',
         ],
     },
 ]

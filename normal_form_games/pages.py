@@ -4,6 +4,7 @@ from .models import Constants
 
 
 class Choice(Page):
+    timeout_seconds = 15
     form_model = 'player'
     form_fields = ['choice']
 
@@ -17,13 +18,13 @@ class Choice(Page):
 class ResultsWaitPage(WaitPage):
     wait_for_all_groups = True
     def after_all_players_arrive(self):
-        print('after_all_players_arrive')
         for group in self.subsession.get_groups():
             group.set_payoffs()
         self.subsession.group_randomly()
 
 
 class ResultsSummary(Page):
+    timeout_seconds = 5
     def is_displayed(self):
         return True
 

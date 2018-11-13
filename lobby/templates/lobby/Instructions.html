@@ -1,0 +1,57 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Instructions
+{% endblock %}
+
+{% block content %}
+
+    <p> In this HIT you will play {{ session.config.num_games }} two-player
+    games with many different real people. In each game, you will see a table
+    like the one below. You will then have {{ session.config.seconds_per_game }}
+    seconds to choose a row. The other person will choose a column in the same way.
+    These two decision select one cell from the table, which determines the points
+    you will each receive.
+
+
+    <div id="target1" class="target"></div>
+
+    <p>
+    In each cell, there are two numbers. The first (orange) number is the
+    number of points you get, and the second (blue) number is the number of
+    points the other person gets. These points will determine the bonus
+    payment you receive at the end of the HIT.
+    For example, if you choose the third row and the other person chooses
+    the second column, you would receive 4 points and she or he would receive
+    8 points, as shown below.
+
+    <div id="target2" class="target"></div>
+
+    After each game, you will be matched with a new person and play a new game.
+    Before you play with other people for real money, you wil practice by playing
+    a few practice rounds against the computer which plays randomly.
+
+    <div class="centered">
+        {% next_button %}
+    </div>
+
+
+    <script>
+        var game = [
+          [[3, 3], [0, 6], [1, 5]],
+          [[6, 0], [9, 0], [2, 6]],
+          [[2, 3], [4, 8], [8, 1]],
+        ];
+        var row = null;
+        var col = null;
+        
+        $(document).ready(function () {
+          showGame('#target1', game);
+        });
+        $(document).ready(function () {
+          showResult('#target2', game, 2, 1);
+        });
+    </script>
+
+{% endblock %}

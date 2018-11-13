@@ -1,0 +1,38 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    Quiz {{ player.q_num }} of 3
+{% endblock %}
+
+{% block content %}
+
+    <p> To ensure that you understand the rules, please answer the questions below.
+        If you answer any question incorrectly, you will be brought back to the
+        Instructions page to review.
+
+
+    <div id="target1" class="target"></div>
+
+    You choose row {{ row }} and the other person chooses column {{ col }}.
+
+    {% formfield player.payoff label="What payoff do you receive?" %}
+    {% formfield player.other_payoff label="What payoff does the other player receive?" %}
+
+    <div class="centered">
+        {% next_button %}
+    </div>
+
+
+    <script>
+        $('#id_other_payoff').val('');
+        var game = JSON.parse("{{ player.game }}");
+        var row = null;
+        var col = null;
+        
+        $(document).ready(function () {
+          showGame('#target1', game);
+        });
+    </script>
+
+{% endblock %}
