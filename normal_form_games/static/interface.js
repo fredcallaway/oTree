@@ -32,7 +32,6 @@ function showResult(target, game, row, col) {
     .addClass('chosen')
     .removeClass('unchosen')
   ;
-  // let outcome = game[row][col];
 }
 
 function runGame(target, game) {
@@ -40,6 +39,7 @@ function runGame(target, game) {
   let msg = $('<div>', {id: 'nfg-msg'});
   let rowmsg = $('<div>').appendTo(msg);
   let colmsg = $('<div>').appendTo(msg);
+  $('.otree-btn-next').prop('disabled', true);
 
   $(target)
     .append(render_game(game))
@@ -50,14 +50,26 @@ function runGame(target, game) {
 
   $('.nfg-row').click(function() {
     let row = parseInt($(this).attr('value'));
-    console.log(row);
+    
     rowmsg.html(`You chose row ${row+1}.`);
-    colmsg.html('Waiting for the other player...');
-    $('.nfg-row').removeClass('nfg-row');
+
     $('.nfg-cell').addClass('unchosen');
-    $(`.nfg-row-${row}`)
-      .addClass('chosen')
-      .removeClass('unchosen');
-    $('#id_choice').val(String(row));
+    for (let i in game) {
+      if (i == row) {
+        $(`.nfg-row-${i}`)
+          .removeClass('unchosen')
+          .addClass('chosen')
+        ;        
+      }
+      else {
+        $(`.nfg-row-${i}`)
+          .removeClass('chosen')
+          .addClass('unchosen')
+        ;
+      }
+    }
+
+    $('#id_choice').val(String(row));  // record choice
+    $('.otree-btn-next').prop('disabled', false);
   });
 }

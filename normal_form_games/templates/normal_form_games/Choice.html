@@ -7,18 +7,14 @@
 
 {% block content %}
 
-    The game is {{ player.game }}
-
     <div id="target"></div>
     <input type="hidden" value="-1" name="choice" id="id_choice"/>
 
-    {% if last_choice %}
-        You chose {{ last_choice }}.
-    {% endif %}
-
     {{ form.choice.errors }}
 
-    {% next_button %}
+    <div class="centered">
+        {% next_button %}
+    </div>
     
     <script>
         var game = JSON.parse("{{ player.game }}");

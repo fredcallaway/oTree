@@ -47,12 +47,16 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    game = models.StringField()
-          
+
     def set_payoffs(self):
         p1, p2 = self.get_players()
-        p1.payoff = c(10)
-        p2.payoff = c(20)        
+        p1.other_choice = p2.choice
+        p2.other_choice = p1.choice
+
+
+        game = json.loads(p1.game)
+        p1.payoff = c(game[p1.choice][p2.choice][0])
+        p2.payoff = c(game[p1.choice][p2.choice][1])
 
         # matcher = self.get_player_by_role('Matcher')
         # mismatcher = self.get_player_by_role('Mismatcher')

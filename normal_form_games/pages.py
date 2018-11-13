@@ -7,12 +7,11 @@ class Choice(Page):
     form_model = 'player'
     form_fields = ['choice']
 
-    def vars_for_template(self):
-        prev = self.player.in_previous_rounds()
-        return {
-            'last_choice': prev[-1].choice + 1 if prev else False,
-            'game': self.group.game
-        }
+    # def vars_for_template(self):
+    #     prev = self.player.in_previous_rounds()
+    #     return {
+    #         'last_choice': prev[-1].choice + 1 if prev else False,
+    #     }
 
 
 class ResultsWaitPage(WaitPage):
@@ -25,9 +24,6 @@ class ResultsSummary(Page):
         return True
 
     def vars_for_template(self):
-        p1, p2 = self.group.get_players()
-        p1.other_choice = p2.choice
-        p2.other_choice = p1.choice
 
         return {
             # 'row_choice': p1.choice,
