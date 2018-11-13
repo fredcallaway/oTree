@@ -15,8 +15,12 @@ class Choice(Page):
 
 
 class ResultsWaitPage(WaitPage):
+    wait_for_all_groups = True
     def after_all_players_arrive(self):
-        self.group.set_payoffs()
+        print('after_all_players_arrive')
+        for group in self.subsession.get_groups():
+            group.set_payoffs()
+        self.subsession.group_randomly()
 
 
 class ResultsSummary(Page):

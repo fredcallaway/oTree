@@ -26,6 +26,7 @@ def transpose_game(game):
 
 class Subsession(BaseSubsession):
     def creating_session(self):
+        # self.group_randomly()
         for group in self.get_groups():
             game = rand_game(Constants.size)
             p1, p2 = group.get_players()
