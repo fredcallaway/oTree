@@ -1,12 +1,12 @@
 /* jshint esversion: 6 */
 
 function render_game(game) {
-  let result = ["<table border=2>"];
+  let result = ["<table class='game-table' border=2>"];
   game.forEach((row, i) => {
-    result.push(`<tr class='nfg-row' value='${i}'>`);
+    result.push(`<tr class='game-row' value='${i}'>`);
     // result.push('<td><button class="btn btn-secondary">X</button></td>');
     row.forEach((cell, j) => {
-      result.push(`<td class='nfg-cell nfg-row-${i} nfg-col-${j} '>&nbsp;
+      result.push(`<td class='game-cell game-row-${i} game-col-${j} '>&nbsp;
         <payouts><rowpay>${cell[0]}</rowpay>  |  <colpay>${cell[1]}</colpay></payouts>
         &nbsp;</td>`
       );
@@ -20,15 +20,15 @@ function render_game(game) {
 function showResult(target, game, row, col) {
   console.log('showResult', row, col);
   $(target).append(render_game(game));
-  $('.nfg-row').removeClass('nfg-row');
+  $('.game-row').removeClass('game-row');
 
-  $(`.nfg-row-${row}`)
+  $(`.game-row-${row}`)
     .addClass('chosen')
     .removeClass('unchosen');
 
-  $('.nfg-cell').addClass('unchosen');
-  $(`.nfg-col-${col}`).addClass('chosen');
-  $(`.nfg-col-${col}.nfg-row-${row}`)
+  $('.game-cell').addClass('unchosen');
+  $(`.game-col-${col}`).addClass('chosen');
+  $(`.game-col-${col}.game-row-${row}`)
     .addClass('chosen')
     .removeClass('unchosen')
   ;
@@ -36,7 +36,7 @@ function showResult(target, game, row, col) {
 
 function runGame(target, game) {
 
-  let msg = $('<div>', {id: 'nfg-msg'});
+  let msg = $('<div>', {id: 'game-msg'});
   let rowmsg = $('<div>').appendTo(msg);
   let colmsg = $('<div>').appendTo(msg);
   $('.otree-btn-next').prop('disabled', true);
@@ -48,22 +48,22 @@ function runGame(target, game) {
 
   rowmsg.html('Please choose a row.');
 
-  $('.nfg-row').click(function() {
+  $('.game-row').click(function() {
     let row = parseInt($(this).attr('value'));
     
     rowmsg.html(`You chose row ${row+1}.`);
 
-    $('.nfg-cell').addClass('unchosen');
+    $('.game-cell').addClass('unchosen');
     for (let i in game) {
       if (i == row) {
       // Mark chosen row
-        $(`.nfg-row-${i}`)
+        $(`.game-row-${i}`)
           .removeClass('unchosen')
           .addClass('chosen')
         ;        
       }
       else {
-        $(`.nfg-row-${i}`)
+        $(`.game-row-${i}`)
           .removeClass('chosen')
           .addClass('unchosen')
         ;
