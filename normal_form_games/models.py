@@ -4,7 +4,6 @@ from otree.api import (
 )
 import random
 
-
 doc = """
 A demo of how rounds work in oTree, in the context of 'matching pennies'
 """
@@ -17,10 +16,18 @@ class Constants(BaseConstants):
     stakes = c(100)
 
 
+def rand_game(size):
+    r = lambda: random.randint(1,9)
+    return [[[r(), r()] for i in range(size)] for j in range(size)]
+
+
 class Subsession(BaseSubsession):
-    game = models.StringField()
     def creating_session(self):
-        self.game = "Not One"
+        for group in self.get_groups():
+            g = str(rand_game(3))
+            group.game = g
+
+
         # if self.round_number == 1:
         #     self.game = "One"
         #     paying_round = random.randint(1, Constants.num_rounds)
@@ -36,7 +43,8 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-
+    game = models.StringField()
+          
     def set_payoffs(self):
         pass
         # matcher = self.get_player_by_role('Matcher')

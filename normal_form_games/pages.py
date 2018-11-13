@@ -10,7 +10,8 @@ class Choice(Page):
     def vars_for_template(self):
         prev = self.player.in_previous_rounds()
         return {
-            'last_choice': prev[-1].choice + 1 if prev else False
+            'last_choice': prev[-1].choice + 1 if prev else False,
+            'game': self.group.game
         }
 
 
@@ -25,7 +26,6 @@ class ResultsSummary(Page):
 
     def vars_for_template(self):
         player_in_all_rounds = self.player.in_all_rounds()
-        last_round = player_in_all_rounds[-1]
 
         return {
             'total_payoff': sum(
