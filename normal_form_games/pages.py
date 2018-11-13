@@ -22,16 +22,18 @@ class ResultsWaitPage(WaitPage):
 
 class ResultsSummary(Page):
     def is_displayed(self):
-        return self.round_number == Constants.num_rounds
+        return True
 
     def vars_for_template(self):
-        player_in_all_rounds = self.player.in_all_rounds()
+        p1, p2 = self.group.get_players()
+        p1.other_choice = p2.choice
+        p2.other_choice = p1.choice
 
         return {
-            'total_payoff': sum(
-                [p.payoff for p in player_in_all_rounds]),
-            'paying_round': self.session.vars['paying_round'],
-            'player_in_all_rounds': player_in_all_rounds,
+            # 'row_choice': p1.choice,
+            # 'col_choice': p2.choice
+            # 'paying_round': self.session.vars['paying_round'],
+            # 'player_in_all_rounds': player_in_all_rounds,
         }
 
 

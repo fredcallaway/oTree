@@ -3,7 +3,8 @@ from otree.api import (
     Currency as c, currency_range
 )
 import random
-
+import numpy as np
+import json
 doc = """
 A demo of how rounds work in oTree, in the context of 'matching pennies'
 """
@@ -17,15 +18,18 @@ class Constants(BaseConstants):
 
 
 def rand_game(size):
-    r = lambda: random.randint(1,9)
-    return [[[r(), r()] for i in range(size)] for j in range(size)]
+    return np.random.randint(10, size=(3,3,2))
 
+def transpose_game(game):
+    return np.flip(np.swapaxes(game, 0, 1), 2)
 
 class Subsession(BaseSubsession):
     def creating_session(self):
         for group in self.get_groups():
-            g = str(rand_game(3))
-            group.game = g
+            game = rand_game(3)
+            p1, p2 = group.get_players()
+            p1.game = json.dumps(game.tolist())
+            p2.game = json.dumps(transpose_game(game).tolist())
 
 
         # if self.round_number == 1:
@@ -46,7 +50,10 @@ class Group(BaseGroup):
     game = models.StringField()
           
     def set_payoffs(self):
-        pass
+        p1, p2 = self.get_players()
+        p1.payoff = c(10)
+        p2.payoff = c(20)        
+
         # matcher = self.get_player_by_role('Matcher')
         # mismatcher = self.get_player_by_role('Mismatcher')
 
@@ -64,12 +71,9 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    # penny_side = models.StringField(
-    #     choices=['Heads', 'Tails'],
-    #     widget=widgets.RadioSelect
-    # )
+    game = models.StringField()
     choice = models.IntegerField()
-    # is_winner = models.BooleanField()
+    other_choice = models.IntegerField()
 
     def role(self):
         if self.id_in_group == 1:

@@ -1,4 +1,4 @@
-{% extends "global/Page.html" %}
+{% extends "normal_form_games/Page.html" %}
 {% load otree %}
 
 {% block title %}
@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    The game is {{ group.game }}
+    The game is {{ player.game }}
 
     <div id="target"></div>
     <input type="hidden" value="-1" name="choice" id="id_choice"/>
@@ -19,43 +19,13 @@
     {{ form.choice.errors }}
 
     {% next_button %}
-
-    <style type="text/css">
-    #target {
-        margin: auto;
-        margin-top: 50px;
-        text-align: center;
-        font-family: Avenir;
-        font-size: 14pt;
-    }
-    table {
-        margin: auto;
-        font-size: 20pt;
-    }
-    rowpay {
-        color: #ff7f0e;
-    }
-    colpay {
-        color: #4a74ff;
-    }
-    tr.nfg-row:hover {
-        background: #ddd;
-    }
-    .chosen {
-        background: #ddd;
-        opacity: 1;
-    }
-    .unchosen{
-        opacity: 0.4 !important;
-    }
-    .unchosen > payouts {
-        opacity: 0.4 !important;
-    }
-    #nfg-msg {
-        margin-top: 20px;
-    }
-    </style>
-    <script src="{% static "interface.js" %}"></script>
+    
+    <script>
+        var game = JSON.parse("{{ player.game }}");
+        $(document).ready(function () {
+          runGame('#target', game);
+        });
+    </script>
 
 
 {% endblock %}

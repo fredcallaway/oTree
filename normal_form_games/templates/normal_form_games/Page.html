@@ -1,0 +1,46 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+
+{% block app_styles %}
+
+<style type="text/css">
+    #target {
+        margin: auto;
+        margin-top: 50px;
+        text-align: center;
+        font-family: Avenir;
+        font-size: 14pt;
+    }
+    table {
+        margin: auto;
+        font-size: 20pt;
+    }
+    rowpay {
+        color: #ff7f0e;
+    }
+    colpay {
+        color: #4a74ff;
+    }
+    tr.nfg-row:hover {
+        background: #ddd;
+    }
+    .chosen {
+        background: #ddd;
+        opacity: 1;
+    }
+    .unchosen{
+        opacity: 0.4 !important;
+    }
+    .unchosen > payouts {
+        opacity: 0.4 !important;
+    }
+    #nfg-msg {
+        margin-top: 20px;
+    }
+</style>
+
+{% endblock %}
+
+{% block app_scripts %}
+<script src="{% static "interface.js" %}"></script>
+{% endblock %}

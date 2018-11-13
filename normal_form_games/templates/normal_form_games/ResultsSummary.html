@@ -1,25 +1,23 @@
-{% extends "global/Page.html" %}
+{% extends "normal_form_games/Page.html" %}
 {% load otree %}
 
 {% block title %}
-    Final results
+    Result
 {% endblock %}
 
 {% block content %}
 
-    <table class="table">
-        <tr>
-            <th>Round</th>
-            <th>Player and outcome</th>
-        </tr>
-        {% for p in player_in_all_rounds %}
-            <tr>
-                <td>{{ p.round_number }}</td>
-            </tr>
-        {% endfor %}
-    </table>
 
-
-
+    <div id="target"></div>
+    <script>
+        var row = parseInt("{{ player.choice }}");
+        var col = parseInt("{{ player.other_choice }}");
+        var game = JSON.parse("{{ player.game }}");
+        $(document).ready(function () {
+          showResult('#target', game, row, col);
+        });
+    </script>
+    
+    {% next_button %}
 
 {% endblock %}

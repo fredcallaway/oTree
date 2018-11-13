@@ -35,7 +35,7 @@ function runGame(target, game) {
   rowmsg.html('Please choose a row.');
 
   rowChoice = new Promise(resolve => {
-    $('.nfg-row').click(_.once(function() {
+    $('.nfg-row').click(function() {
       let row = parseInt($(this).attr('value'));
       console.log(row);
       rowmsg.html(`You chose row ${row+1}.`);
@@ -46,7 +46,7 @@ function runGame(target, game) {
         .addClass('chosen')
         .removeClass('unchosen');
       resolve(row);
-    }));
+    });
   });
   rowChoice.then(choice => {
     $('#id_choice').val(String(choice));
