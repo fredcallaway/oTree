@@ -10,16 +10,16 @@ SESSION_CONFIG_DEFAULTS = {
     'participation_fee': 0.00,
     'doc': "",
     "num_games": 50,
-    "seconds_per_game": 15,
+    "seconds_per_game": 20,
 }
 
 SESSION_CONFIGS = [
     {
         'name': 'normal_form_games',
         'display_name': "Normal Form Games",
-        'num_demo_participants': 2,
+        'num_demo_participants': 8,
         'app_sequence': [
-            'lobby',
+            # 'lobby',
             'normal_form_games',
         ],
     },

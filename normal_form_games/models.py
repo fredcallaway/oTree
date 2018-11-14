@@ -25,13 +25,15 @@ def transpose_game(game):
     return np.flip(np.swapaxes(game, 0, 1), 2)
 
 class Subsession(BaseSubsession):
-    def creating_session(self):
+    pass
+    # def creating_session(self):
         # self.group_randomly()
-        for group in self.get_groups():
-            game = rand_game(Constants.size)
-            p1, p2 = group.get_players()
-            p1.game = json.dumps(game.tolist())
-            p2.game = json.dumps(transpose_game(game).tolist())
+        # for group in self.get_groups():
+        #     game = rand_game(Constants.size)
+        #     print('players', group.get_players())
+        #     p1, p2 = group.get_players()
+        #     p1.game = json.dumps(game.tolist())
+        #     p2.game = json.dumps(transpose_game(game).tolist())
 
 
 class Group(BaseGroup):
