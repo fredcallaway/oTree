@@ -10,6 +10,20 @@
 
     <div id="target"></div>
     <script>
+        var row = parseInt("{{ prev_player.choice }}");
+        var col = parseInt("{{ prev_player.other_choice }}");
+        var game = JSON.parse("{{ prev_player.game }}");
+        $(document).ready(function () {
+          showResult('#target', game, row, col);
+        });
+    </script>
+
+
+    <div class="centered">
+        You earned {{ prev_player.payoff }}.
+        {% next_button %}
+    </div>
+    <!-- <script>
         var row = parseInt("{{ player.choice }}");
         var col = parseInt("{{ player.other_choice }}");
         var game = JSON.parse("{{ player.game }}");
@@ -18,10 +32,10 @@
         });
     </script>
 
-    
+
     <div class="centered">
         You earned {{ player.payoff }}.
         {% next_button %}
-    </div>
+    </div> -->
 
 {% endblock %}
