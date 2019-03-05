@@ -15,6 +15,7 @@ class Constants(BaseConstants):
     num_rounds = 8
     stakes = c(100)
     size = 3
+    min_time = 10
 
 
 

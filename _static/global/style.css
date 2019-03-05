@@ -39,4 +39,5 @@ tr.game-row:hover {
 }
 #game-msg {
     margin-top: 20px;
+    text-align: center;
 }
