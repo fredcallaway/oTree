@@ -23,8 +23,10 @@ class Subsession(BaseSubsession):
         if self.round_number == 1:
             for p in self.get_players():
                 p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
+                p.participant.vars['treatment'] = [-0.8, 0.8][(int(p.id_in_group/2) % 2)]
         for p in self.get_players():
             p.player_role = p.participant.vars['role']
+            p.treatment = p.participant.vars['treatment']
 
     # def creating_session(self):
         # self.group_randomly()
@@ -52,6 +54,7 @@ class Player(BasePlayer):
     choice = models.IntegerField()
     other_choice = models.IntegerField()
     player_role = models.StringField()
+    treatment = models.FloatField()
 
     def set_payoff(self):
         prev_player = self.in_round(self.round_number - 1)
