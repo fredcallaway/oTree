@@ -104,6 +104,7 @@ class Choice(Page):
 class ResultsWaitPage(WaitPage):
     # wait_for_all_groups = True
     group_by_arrival_time = True
+    title_text = "Waiting for other players"
 
     def get_players_for_group(self, players):
         round = self.round_number
