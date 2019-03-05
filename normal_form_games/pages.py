@@ -35,31 +35,30 @@ def rand_game(size, ρ=0., σ=3):
 
 def transpose_game(game):
     return np.flip(np.swapaxes(game, 0, 1), 2)
-# 
-# games_df_dict = dict()
-# for ρ_pop in [-0.8, 0.8]:
-#     games_df = pd.DataFrame()
-#     for i in range(1,51):
-#         ρ = ρ_pop
-#         if i in [31,37,42,44,49]:
-#             ρ = 0.
-#             row_game = rand_game(3, ρ=ρ, σ=5)
-#         else:
-#             ρ = ρ_pop
-#             row_game = rand_game(3, ρ=ρ, σ=5)
-#         col_game = transpose_game(row_game)
-#         row_choices = []
-#         col_choices = []
-#         games_df = games_df.append({"round":int(i), "row_game":json.dumps(row_game.tolist()), "col_game":json.dumps(col_game.tolist()), "row":row_choices, "col":col_choices, "corr":ρ}, ignore_index=True)
-#     games_df["round"] = games_df["round"].astype(int)
-#     games_df = games_df.set_index("round")
-#     games_df_dict[ρ_pop] = games_df
 
 
 games_df_dict = dict()
-games_df_dict[-0.8] = pd.read_pickle("games_df_negative.pkl")
-games_df_dict[0.8] = pd.read_pickle("games_df_positive.pkl")
-
+try:
+    games_df_dict[-0.8] = pd.read_pickle("games_df_negative.pkl")
+    games_df_dict[0.8] = pd.read_pickle("games_df_positive.pkl")
+except:
+    for ρ_pop in [-0.8, 0.8]:
+        games_df = pd.DataFrame()
+        for i in range(1,51):
+            ρ = ρ_pop
+            if i in [31,37,42,44,49]:
+                ρ = 0.
+                row_game = rand_game(3, ρ=ρ, σ=5)
+            else:
+                ρ = ρ_pop
+                row_game = rand_game(3, ρ=ρ, σ=5)
+            col_game = transpose_game(row_game)
+            row_choices = []
+            col_choices = []
+            games_df = games_df.append({"round":int(i), "row_game":json.dumps(row_game.tolist()), "col_game":json.dumps(col_game.tolist()), "row":row_choices, "col":col_choices, "corr":ρ}, ignore_index=True)
+        games_df["round"] = games_df["round"].astype(int)
+        games_df = games_df.set_index("round")
+        games_df_dict[ρ_pop] = games_df
 
 class Choice(Page):
     # timeout_seconds = 60

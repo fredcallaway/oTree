@@ -12,7 +12,7 @@ A demo of how rounds work in oTree, in the context of 'matching pennies'
 class Constants(BaseConstants):
     name_in_url = 'game'
     players_per_group = None
-    num_rounds = 4
+    num_rounds = 8
     stakes = c(100)
     size = 3
 
