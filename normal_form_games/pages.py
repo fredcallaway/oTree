@@ -7,7 +7,6 @@ import pickle as pkl
 import pandas as pd
 import json
 import numpy as np
-import time
 
 
 
@@ -36,6 +35,13 @@ def rand_game(size, ρ=0., σ=3):
 def transpose_game(game):
     return np.flip(np.swapaxes(game, 0, 1), 2)
 
+same_games_dict = dict()
+same_games_dict[1] = np.array([[[9,3], [2,8],[8,7]],[[5,4],[5,8],[6,3]], [[6,5],[0,2],[3,0]]])
+same_games_dict[2] = np.array([[[3,2], [3,1],[3,5]],[[4,0],[6,9],[1,4]], [[9,6],[2,6],[0,3]]])
+same_games_dict[3] = np.array([[[1,3], [9,2],[5,7]],[[1,6],[7,7],[7,0]], [[5,7],[3,1],[6,9]]])
+same_games_dict[4] = np.array([[[8,7], [1,7],[2,9]],[[0,9],[3,4],[4,1]], [[4,1],[3,6],[6,4]]])
+same_games_dict[5] = np.array([[[9,8], [6,5],[1,5]],[[8,8],[5,4],[4,0]], [[6,1],[5,4],[6,6]]])
+
 
 games_df_dict = dict()
 try:
@@ -46,9 +52,8 @@ except:
         games_df = pd.DataFrame()
         for i in range(1,51):
             ρ = ρ_pop
-            if i in [31,37,42,44,49]:
-                ρ = 0.
-                row_game = rand_game(3, ρ=ρ, σ=5)
+            if i in same_games_dict.keys():
+                row_game = same_games_dict[i]
             else:
                 ρ = ρ_pop
                 row_game = rand_game(3, ρ=ρ, σ=5)

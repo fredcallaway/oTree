@@ -16,7 +16,7 @@ class Constants(BaseConstants):
     players_per_group = None
     num_rounds = 10
     size = 3
-
+    min_time = 10
 
 class Subsession(BaseSubsession):
     pass
@@ -34,4 +34,3 @@ class Player(BasePlayer):
     other_payoff = models.IntegerField()
     correct = models.BooleanField()
     q_num = models.IntegerField()
-
