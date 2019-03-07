@@ -24,7 +24,7 @@ class Subsession(BaseSubsession):
         if self.round_number == 1:
             for p in self.get_players():
                 p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
-                p.participant.vars['treatment'] = [-0.8, 0.8][(int(p.id_in_group/2) % 2)]
+                p.participant.vars['treatment'] = [-0.8, 0.8][(int((1 + p.id_in_group)/2) % 2)]
         for p in self.get_players():
             p.player_role = p.participant.vars['role']
             p.treatment = p.participant.vars['treatment']

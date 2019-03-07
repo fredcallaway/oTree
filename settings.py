@@ -19,7 +19,7 @@ SESSION_CONFIGS = [
         'display_name': "Normal Form Games",
         'num_demo_participants': 4,
         'app_sequence': [
-            # 'lobby',
+            'lobby',
             'normal_form_games',
         ],
     },

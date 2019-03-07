@@ -16,8 +16,8 @@
 
     You choose row {{ row }} and the other person chooses column {{ col }}.
 
-    {% formfield player.payoff label="What payoff do you receive?" %}
-    {% formfield player.other_payoff label="What payoff does the other player receive?" %}
+    {% formfield player.payoff_quiz label="What payoff do you receive?" %}
+    {% formfield player.other_payoff_quiz label="What payoff does the other player receive?" %}
 
     <div class="centered">
         {% next_button %}
@@ -25,11 +25,11 @@
 
 
     <script>
-        $('#id_other_payoff').val('');
+        $('#id_other_payoff_quiz').val('');
         var game = JSON.parse("{{ player.game }}");
         var row = null;
         var col = null;
-        
+
         $(document).ready(function () {
           showGame('#target1', game);
         });

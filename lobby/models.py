@@ -28,9 +28,9 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     game = models.StringField()
-    choice = models.IntegerField()
-    other_choice = models.IntegerField()
-    payoff = models.IntegerField()
-    other_payoff = models.IntegerField()
+    choice_quiz = models.IntegerField()
+    other_choice_quiz = models.IntegerField()
+    payoff_quiz = models.IntegerField()
+    other_payoff_quiz = models.IntegerField()
     correct = models.BooleanField()
     q_num = models.IntegerField()

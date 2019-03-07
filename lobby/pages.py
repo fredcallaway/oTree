@@ -14,8 +14,8 @@ class MyPage(Page):
 
     def before_next_page(self):
         self.player.game = json.dumps(rand_game(Constants.size).tolist())
-        self.player.choice = np.random.randint(Constants.size)
-        self.player.other_choice = np.random.randint(Constants.size)
+        self.player.choice_quiz = np.random.randint(Constants.size)
+        self.player.other_choice_quiz = np.random.randint(Constants.size)
 
 
 class Instructions(MyPage):
@@ -28,14 +28,14 @@ class Instructions(MyPage):
 
 class Quiz(MyPage):
     form_model = 'player'
-    form_fields = ['payoff', 'other_payoff']
+    form_fields = ['payoff_quiz', 'other_payoff_quiz']
 
     def vars_for_template(self):
         return {
-            'row': self.player.choice + 1,
-            'col': self.player.other_choice + 1
+            'row': self.player.choice_quiz + 1,
+            'col': self.player.other_choice_quiz + 1
         }
-    
+
     def is_displayed(self):
         return self.player.correct == True
 
@@ -43,13 +43,13 @@ class Quiz(MyPage):
         p = self.player
         p.q_num += 1
         game = json.loads(p.game)
-        cell = game[p.choice][p.other_choice]
-        p.correct = (cell[0] == p.payoff and cell[1] == p.other_payoff)
+        cell = game[p.choice_quiz][p.other_choice_quiz]
+        p.correct = (cell[0] == p.payoff_quiz and cell[1] == p.other_payoff_quiz)
         super().before_next_page()
         # p.participant.vars['passing'] &= p.correct
 
 class LastQuiz(Quiz):
-    
+
     def before_next_page(self):
         super().before_next_page()
         p = self.player
