@@ -12,7 +12,7 @@ A demo of how rounds work in oTree, in the context of 'matching pennies'
 class Constants(BaseConstants):
     name_in_url = 'game'
     players_per_group = None
-    num_rounds = 8
+    num_rounds = 51
     stakes = c(100)
     size = 3
     min_time = 10
@@ -24,7 +24,7 @@ class Subsession(BaseSubsession):
         if self.round_number == 1:
             for p in self.get_players():
                 p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
-                p.participant.vars['treatment'] = [-0.8, 0.8][(int((1 + p.id_in_group)/2) % 2)]
+                p.participant.vars['treatment'] = ["negative", "positive"][(int((1 + p.id_in_group)/2) % 2)]
         for p in self.get_players():
             p.player_role = p.participant.vars['role']
             p.treatment = p.participant.vars['treatment']
@@ -55,7 +55,7 @@ class Player(BasePlayer):
     choice = models.IntegerField()
     other_choice = models.IntegerField()
     player_role = models.StringField()
-    treatment = models.FloatField()
+    treatment = models.StringField()
 
     def set_payoff(self):
         prev_player = self.in_round(self.round_number - 1)

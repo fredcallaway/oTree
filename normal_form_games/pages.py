@@ -7,8 +7,67 @@ import pickle as pkl
 import pandas as pd
 import json
 import numpy as np
+import sqlite3
+
+conn = sqlite3.connect("predefined_games.db")
+cur = conn.cursor()
+cur.execute("create table if not exists games (id integer, round integer, game text, role text, treatment text, corr real)")
+cur.execute("create table if not exists plays (id integer, round integer, choice integer, role text, treatment text)")
+conn.commit()
+conn.close()
 
 
+def add_game(round, game, role, treatment, ρ):
+    conn = sqlite3.connect("predefined_games.db")
+    sql = ''' INSERT INTO games(round, game, role, treatment, corr)
+              VALUES(?,?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute("SELECT game FROM games WHERE (round,role,treatment)=(?,?,?)", (round,role,treatment))
+    rows = cur.fetchone()
+    if rows == None:
+        cur.execute(sql, (round, game, role, treatment, ρ))
+        print("game added")
+        lastrowid = cur.lastrowid
+        conn.commit()
+        conn.close()
+        return lastrowid
+    else:
+        print("Game already in database")
+        conn.commit()
+        conn.close()
+        return -1
+
+def get_game(round, role, treatment):
+    conn = sqlite3.connect("predefined_games.db")
+    cur = conn.cursor()
+    cur.execute("SELECT game FROM games WHERE (round,role,treatment)=(?,?,?)", (round,role, treatment))
+    game = cur.fetchone()[0]
+    conn.commit()
+    conn.close()
+    return game
+
+
+
+
+def add_play(round, choice, role, treatment):
+    conn = sqlite3.connect("predefined_games.db")
+    sql = ''' INSERT INTO plays(round, choice, role, treatment)
+              VALUES(?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, (round, choice, role, treatment))
+    lastrowid = cur.lastrowid
+    conn.commit()
+    conn.close()
+    return lastrowid
+
+def get_plays(round, role, treatment):
+    conn = sqlite3.connect("predefined_games.db")
+    cur = conn.cursor()
+    cur.execute("SELECT choice FROM plays WHERE (round, role, treatment)=(?,?,?)", (round,role, treatment))
+    choices = [x[0] for x in cur.fetchall()]
+    conn.commit()
+    conn.close()
+    return choices
 
 def sample_cell(ρ=0, max=9, min=0, μ=5, σ=3):
     r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
@@ -42,29 +101,35 @@ same_games_dict[41] = np.array([[[1,3], [9,2],[5,7]],[[1,6],[7,7],[7,0]], [[5,7]
 same_games_dict[44] = np.array([[[8,7], [1,7],[2,9]],[[0,9],[3,4],[4,1]], [[4,1],[3,6],[6,4]]])
 same_games_dict[49] = np.array([[[9,8], [6,5],[1,5]],[[8,8],[5,4],[4,0]], [[6,1],[5,4],[6,6]]])
 
+# add_game(31, json.dumps(transpose_game(same_games_dict[31]).tolist()), "col", "positive", 0.)
+
+get_game(31, "row", "positive")
+add_play(31, 2, "row", "positive")
+len(get_plays(1, "row", "positive"))
+# conn = sqlite3.connect("predefined_games.db")
+# # cur = conn.cursor()
+# # cur.execute("SELECT * FROM games")
+# # game = cur.fetchone()
+# # cur.fetchall()
+# conn.commit()
+# conn.close()
 
 
-games_df_dict = dict()
-try:
-    games_df_dict[-0.8] = pd.read_pickle("games_df_negative.pkl")
-    games_df_dict[0.8] = pd.read_pickle("games_df_positive.pkl")
-except:
-    for ρ_pop in [-0.8, 0.8]:
-        games_df = pd.DataFrame()
-        for i in range(1,51):
-            ρ = ρ_pop
-            if i in same_games_dict.keys():
-                row_game = same_games_dict[i]
-            else:
-                ρ = ρ_pop
-                row_game = rand_game(3, ρ=ρ, σ=5)
-            col_game = transpose_game(row_game)
-            row_choices = []
-            col_choices = []
-            games_df = games_df.append({"round":int(i), "row_game":json.dumps(row_game.tolist()), "col_game":json.dumps(col_game.tolist()), "row":row_choices, "col":col_choices, "corr":ρ}, ignore_index=True)
-        games_df["round"] = games_df["round"].astype(int)
-        games_df = games_df.set_index("round")
-        games_df_dict[ρ_pop] = games_df
+
+
+corr_dict = {"positive":0.8, "negative":-0.8}
+for treat in ["positive", "negative"]:
+    for i in range(1,51):
+        if i in same_games_dict.keys():
+            ρ = 0
+            row_game = same_games_dict[i]
+        else:
+            ρ = corr_dict[treat]
+            row_game = rand_game(3, ρ=ρ, σ=5)
+        col_game = transpose_game(row_game)
+        add_game(i, json.dumps(row_game.tolist()), "row", treat, ρ)
+        add_game(i, json.dumps(col_game.tolist()), "col", treat, ρ)
+
 
 class Choice(Page):
     # timeout_seconds = 60
@@ -73,12 +138,12 @@ class Choice(Page):
 
     def before_next_page(self):
         if not self.timeout_happened:
-            games_df = games_df_dict[self.player.treatment]
-            games_df.at[self.round_number,self.player.player_role].append(self.player.choice)
+            add_play(self.round_number, self.player.choice, self.player.player_role, self.player.treatment)
 
     def vars_for_template(self):
-        games_df = games_df_dict[self.player.treatment]
-        self.player.game = games_df.at[self.round_number, self.player.player_role + "_game"]
+        # games_df = games_df_dict[self.player.treatment]
+        self.player.game = get_game(self.round_number, self.player.player_role, self.player.treatment)
+        # self.player.game = games_df.at[self.round_number, self.player.player_role + "_game"]
         return {"play_rounds":Constants.num_rounds - 1}
 
     def is_displayed(self):
@@ -114,29 +179,29 @@ class ResultsWaitPage(WaitPage):
 
     def get_players_for_group(self, players):
         round = self.round_number
-        players_negative = list(filter(lambda p: p.treatment == -0.8, players))
-        players_positive = list(filter(lambda p: p.treatment == 0.8, players))
+        players_negative = list(filter(lambda p: p.treatment == "negative", players))
+        players_positive = list(filter(lambda p: p.treatment == "positive", players))
         players_to_return = []
-        games_df = games_df_dict[-0.8]
-        if len(games_df.at[round-1, "row"]) > 0 and len(games_df.at[round-1, "col"]) > 0:
+
+        row_choices = get_plays(int(round -1), "row", "negative")
+        col_choices = get_plays(int(round -1), "col", "negative")
+        if len(row_choices) > 0 and len(col_choices) > 0:
             for player in  players_negative:
                 prev_player = player.in_round(self.round_number - 1)
-                opp_role = "col" if player.player_role == "row" else "row"
-                prev_player.other_choice = random.choice(games_df.at[round-1,opp_role])
-                # player.other_choice = random.choice(games_df.at[round-1,opp_role])
+                opp_choices = col_choices if player.player_role == "row" else row_choices
+                prev_player.other_choice = random.choice(opp_choices)
                 player.set_payoff()
             players_to_return.extend(players_negative)
 
-        games_df = games_df_dict[0.8]
-        if len(games_df.at[round-1, "row"]) > 0 and len(games_df.at[round-1, "col"]) > 0:
+        row_choices = get_plays(int(round -1), "row", "positive")
+        col_choices = get_plays(int(round -1), "col", "positive")
+        if len(row_choices) > 0 and len(col_choices) > 0:
             for player in  players_positive:
                 prev_player = player.in_round(self.round_number - 1)
-                opp_role = "col" if player.player_role == "row" else "row"
-                prev_player.other_choice = random.choice(games_df.at[round-1,opp_role])
-                # player.other_choice = random.choice(games_df.at[round-1,opp_role])
+                opp_choices = col_choices if player.player_role == "row" else row_choices
+                prev_player.other_choice = random.choice(opp_choices)
                 player.set_payoff()
             players_to_return.extend(players_positive)
-
         return players_to_return
 
     def is_displayed(self):
@@ -172,9 +237,9 @@ class ResultsSummary(Page):
         }
 class FinalSummary(Page):
     def is_displayed(self):
-        if self.round_number == Constants.num_rounds:
-            games_df_dict[-0.8].to_pickle("games_df_negative.pkl")
-            games_df_dict[0.8].to_pickle("games_df_positive.pkl")
+        # if self.round_number == Constants.num_rounds:
+        #     games_df_dict[-0.8].to_pickle("games_df_negative.pkl")
+        #     games_df_dict[0.8].to_pickle("games_df_positive.pkl")
         return self.round_number == Constants.num_rounds
 
     def vars_for_template(self):
