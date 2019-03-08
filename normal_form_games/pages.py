@@ -7,184 +7,39 @@ import pickle as pkl
 import pandas as pd
 import json
 import numpy as np
-import sqlite3
-
-conn = sqlite3.connect("predefined_games.db")
-cur = conn.cursor()
-cur.execute("create table if not exists games (id integer, round integer, game text, role text, treatment text, corr real)")
-cur.execute("create table if not exists plays (id integer, round integer, choice integer, role text, treatment text)")
-conn.commit()
-conn.close()
-
-
-def add_game(round, game, role, treatment, ρ):
-    conn = sqlite3.connect("predefined_games.db")
-    sql = ''' INSERT INTO games(round, game, role, treatment, corr)
-              VALUES(?,?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute("SELECT game FROM games WHERE (round,role,treatment)=(?,?,?)", (round,role,treatment))
-    rows = cur.fetchone()
-    if rows == None:
-        cur.execute(sql, (round, game, role, treatment, ρ))
-        print("game added")
-        lastrowid = cur.lastrowid
-        conn.commit()
-        conn.close()
-        return lastrowid
-    else:
-        print("Game already in database")
-        conn.commit()
-        conn.close()
-        return -1
-
-def get_game(round, role, treatment):
-    conn = sqlite3.connect("predefined_games.db")
-    cur = conn.cursor()
-    cur.execute("SELECT game FROM games WHERE (round,role,treatment)=(?,?,?)", (round,role, treatment))
-    game = cur.fetchone()[0]
-    conn.commit()
-    conn.close()
-    return game
-
-
-
-
-def add_play(round, choice, role, treatment):
-    conn = sqlite3.connect("predefined_games.db")
-    sql = ''' INSERT INTO plays(round, choice, role, treatment)
-              VALUES(?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, (round, choice, role, treatment))
-    lastrowid = cur.lastrowid
-    conn.commit()
-    conn.close()
-    return lastrowid
-
-def get_plays(round, role, treatment):
-    conn = sqlite3.connect("predefined_games.db")
-    cur = conn.cursor()
-    cur.execute("SELECT choice FROM plays WHERE (round, role, treatment)=(?,?,?)", (round,role, treatment))
-    choices = [x[0] for x in cur.fetchall()]
-    conn.commit()
-    conn.close()
-    return choices
-
-def sample_cell(ρ=0, max=9, min=0, μ=5, σ=3):
-    r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
-    r = round(r)
-    c = round(c)
-    while r < min or r > max or c < min or c > max:
-        r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
-        r = round(r)
-        c = round(c)
-    return [int(r),int(c)]
-
-
-def rand_game(size, ρ=0., σ=3):
-    game = np.zeros((size,size,2))
-    for i in range(size):
-        for j in range(size):
-            r,c = sample_cell(ρ=ρ, max=9.5, min=-0.5, μ=5, σ=σ)
-            game[i,j,0] = r
-            game[i,j,1] = c
-    return game
-
-
-
-def transpose_game(game):
-    return np.flip(np.swapaxes(game, 0, 1), 2)
-
-same_games_dict = dict()
-same_games_dict[31] = np.array([[[9,3], [2,8],[8,7]],[[5,4],[5,8],[6,3]], [[6,5],[0,2],[3,0]]])
-same_games_dict[37] = np.array([[[3,2], [3,1],[3,5]],[[4,0],[6,9],[1,4]], [[9,6],[2,6],[0,3]]])
-same_games_dict[41] = np.array([[[1,3], [9,2],[5,7]],[[1,6],[7,7],[7,0]], [[5,7],[3,1],[6,9]]])
-same_games_dict[44] = np.array([[[8,7], [1,7],[2,9]],[[0,9],[3,4],[4,1]], [[4,1],[3,6],[6,4]]])
-same_games_dict[49] = np.array([[[9,8], [6,5],[1,5]],[[8,8],[5,4],[4,0]], [[6,1],[5,4],[6,6]]])
-
-# add_game(31, json.dumps(transpose_game(same_games_dict[31]).tolist()), "col", "positive", 0.)
-
-get_game(31, "row", "positive")
-add_play(31, 2, "row", "positive")
-len(get_plays(1, "row", "positive"))
-# conn = sqlite3.connect("predefined_games.db")
-# # cur = conn.cursor()
-# # cur.execute("SELECT * FROM games")
-# # game = cur.fetchone()
-# # cur.fetchall()
-# conn.commit()
-# conn.close()
-
-
-
-
-corr_dict = {"positive":0.8, "negative":-0.8}
-for treat in ["positive", "negative"]:
-    for i in range(1,51):
-        if i in same_games_dict.keys():
-            ρ = 0
-            row_game = same_games_dict[i]
-        else:
-            ρ = corr_dict[treat]
-            row_game = rand_game(3, ρ=ρ, σ=5)
-        col_game = transpose_game(row_game)
-        add_game(i, json.dumps(row_game.tolist()), "row", treat, ρ)
-        add_game(i, json.dumps(col_game.tolist()), "col", treat, ρ)
-
 
 class Choice(Page):
-    # timeout_seconds = 60
     form_model = 'player'
     form_fields = ['choice']
 
-    def before_next_page(self):
-        if not self.timeout_happened:
-            add_play(self.round_number, self.player.choice, self.player.player_role, self.player.treatment)
 
     def vars_for_template(self):
-        # games_df = games_df_dict[self.player.treatment]
-        self.player.game = get_game(self.round_number, self.player.player_role, self.player.treatment)
-        # self.player.game = games_df.at[self.round_number, self.player.player_role + "_game"]
         return {"play_rounds":Constants.num_rounds - 1}
 
     def is_displayed(self):
         return self.round_number < Constants.num_rounds
 
-    # def vars_for_template(self):
-    #     prev = self.player.in_previous_rounds()
-    #     return {
-    #         'last_choice': prev[-1].choice + 1 if prev else False,
-    #     }
-
-# class GroupWaitPage(WaitPage):
-#     pass
-#     # wait_for_all_groups = True
-#     group_by_arrival_time = True
-#
-#     def get_players_for_group(self, players):
-#         # round = self.round_number
-#         # if len(games_df[games_df[round] == round])
-#         if len(players) >= 2:
-#             p1, p2 = random.sample(players, 2)
-#             game = rand_game(Constants.size)
-#             p1.game = json.dumps(game.tolist())
-#             p2.game = json.dumps(transpose_game(game).tolist())
-#             return [p1, p2]
-
-
 
 class ResultsWaitPage(WaitPage):
-    # wait_for_all_groups = True
     group_by_arrival_time = True
     title_text = "Waiting for other players"
 
+    def get_choices(self,prev_players, role, treatment):
+        choices = [p.choice for p in prev_players]
+        choices = list(filter(lambda x: x in [0,1,2,3], choices))
+        return choices
+
     def get_players_for_group(self, players):
         round = self.round_number
+
         players_negative = list(filter(lambda p: p.treatment == "negative", players))
         players_positive = list(filter(lambda p: p.treatment == "positive", players))
         players_to_return = []
 
-        row_choices = get_plays(int(round -1), "row", "negative")
-        col_choices = get_plays(int(round -1), "col", "negative")
+        prev_players = players[0].in_round(round -1).get_others_in_subsession()
+
+        row_choices = self.get_choices(prev_players, "row", "negative")
+        col_choices = self.get_choices(prev_players, "col", "negative")
         if len(row_choices) > 0 and len(col_choices) > 0:
             for player in  players_negative:
                 prev_player = player.in_round(self.round_number - 1)
@@ -193,8 +48,8 @@ class ResultsWaitPage(WaitPage):
                 player.set_payoff()
             players_to_return.extend(players_negative)
 
-        row_choices = get_plays(int(round -1), "row", "positive")
-        col_choices = get_plays(int(round -1), "col", "positive")
+        row_choices = self.get_choices(prev_players, "row", "negative")
+        col_choices = self.get_choices(prev_players, "col", "negative")
         if len(row_choices) > 0 and len(col_choices) > 0:
             for player in  players_positive:
                 prev_player = player.in_round(self.round_number - 1)
@@ -205,29 +60,11 @@ class ResultsWaitPage(WaitPage):
         return players_to_return
 
     def is_displayed(self):
-        # return self.round_number < Constants.num_rounds
         return self.round_number > 1
-    #
-    #
-    # def after_all_players_arrive(self):
-    #     round = self.round_number
-    #     while len(games_df.at[round, "row"]) == 0 or len(games_df.at[round, "col"]) == 0:
-    #         time.sleep(5)
-    #     for player in  self.group.get_players():
-    #         opp_role = "col" if player.role == "row" else "row"
-    #         player.other_choice = random.choice(games_df[games_df[round] == round][opp_role])
-    #         player.set_payoff()
-
-        # self.group.set_payoffs()
-        # for group in self.subsession.get_groups():
-        #     group.set_payoffs()
-        # self.subsession.group_randomly()
 
 
 class ResultsSummary(Page):
-    # timeout_seconds = 5
     def is_displayed(self):
-        # return self.round_number < Constants.num_rounds
         return self.round_number > 1
 
     def vars_for_template(self):
@@ -237,9 +74,6 @@ class ResultsSummary(Page):
         }
 class FinalSummary(Page):
     def is_displayed(self):
-        # if self.round_number == Constants.num_rounds:
-        #     games_df_dict[-0.8].to_pickle("games_df_negative.pkl")
-        #     games_df_dict[0.8].to_pickle("games_df_positive.pkl")
         return self.round_number == Constants.num_rounds
 
     def vars_for_template(self):

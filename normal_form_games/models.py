@@ -16,6 +16,43 @@ class Constants(BaseConstants):
     stakes = c(100)
     size = 3
     min_time = 10
+    ρ_pos = 0.8
+    ρ_neg = -0.8
+    σ = 5.
+
+
+def sample_cell(ρ=0, max=9, min=0, μ=5, σ=3):
+    r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
+    r = round(r)
+    c = round(c)
+    while r < min or r > max or c < min or c > max:
+        r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
+        r = round(r)
+        c = round(c)
+    return [int(r),int(c)]
+
+
+def rand_game(size, ρ=0., σ=3):
+    game = np.zeros((size,size,2))
+    for i in range(size):
+        for j in range(size):
+            r,c = sample_cell(ρ=ρ, max=9.5, min=-0.5, μ=5, σ=σ)
+            game[i,j,0] = r
+            game[i,j,1] = c
+    return game
+
+
+
+def transpose_game(game):
+    return np.flip(np.swapaxes(game, 0, 1), 2)
+
+
+same_games_dict = dict()
+same_games_dict[31] = np.array([[[9,3], [2,8],[8,7]],[[5,4],[5,8],[6,3]], [[6,5],[0,2],[3,0]]])
+same_games_dict[37] = np.array([[[3,2], [3,1],[3,5]],[[4,0],[6,9],[1,4]], [[9,6],[2,6],[0,3]]])
+same_games_dict[41] = np.array([[[1,3], [9,2],[5,7]],[[1,6],[7,7],[7,0]], [[5,7],[3,1],[6,9]]])
+same_games_dict[44] = np.array([[[8,7], [1,7],[2,9]],[[0,9],[3,4],[4,1]], [[4,1],[3,6],[6,4]]])
+same_games_dict[49] = np.array([[[9,8], [6,5],[1,5]],[[8,8],[5,4],[4,0]], [[6,1],[5,4],[6,6]]])
 
 
 
@@ -25,18 +62,28 @@ class Subsession(BaseSubsession):
             for p in self.get_players():
                 p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
                 p.participant.vars['treatment'] = ["negative", "positive"][(int((1 + p.id_in_group)/2) % 2)]
+
+        round = self.round_number
+        games_dict = dict()
+        games_dict["positive"] = dict()
+        games_dict["negative"] = dict()
+        if round in same_games_dict.keys():
+            games_dict["positive"]["row"] = same_games_dict[round]
+            games_dict["positive"]["col"] = transpose_game(games_dict["positive"]["row"])
+            games_dict["negative"]["row"] = same_games_dict[round]
+            games_dict["negative"]["col"] = transpose_game(games_dict["negative"]["row"])
+        else:
+            games_dict["positive"]["row"] = rand_game(Constants.size, ρ=Constants.ρ_pos, σ=Constants.σ)
+            games_dict["positive"]["col"] = transpose_game(games_dict["positive"]["row"])
+            games_dict["negative"]["row"] = rand_game(Constants.size, ρ=Constants.ρ_neg, σ=Constants.σ)
+            games_dict["negative"]["col"] = transpose_game(games_dict["negative"]["row"])
+
+
         for p in self.get_players():
             p.player_role = p.participant.vars['role']
             p.treatment = p.participant.vars['treatment']
+            p.game = json.dumps(games_dict[p.treatment][p.player_role].tolist())
 
-    # def creating_session(self):
-        # self.group_randomly()
-        # for group in self.get_groups():
-        #     game = rand_game(Constants.size)
-        #     print('players', group.get_players())
-        #     p1, p2 = group.get_players()
-        #     p1.game = json.dumps(game.tolist())
-        #     p2.game = json.dumps(transpose_game(game).tolist())
 
 
 class Group(BaseGroup):
@@ -61,5 +108,3 @@ class Player(BasePlayer):
         prev_player = self.in_round(self.round_number - 1)
         game = json.loads(prev_player.game)
         prev_player.payoff = c(game[prev_player.choice][prev_player.other_choice][0])
-        # game = json.loads(self.game)
-        # self.payoff = c(game[self.choice][self.other_choice][0])
