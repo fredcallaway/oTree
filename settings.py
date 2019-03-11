@@ -24,6 +24,14 @@ SESSION_CONFIGS = [
         ],
     },
     {
+        'name': 'games_only',
+        'display_name': "Games Only",
+        'num_demo_participants': 2,
+        'app_sequence': [
+            'normal_form_games',
+        ],
+    },
+    {
         'name': 'lobby',
         'display_name': "Lobby",
         'num_demo_participants': 1,
