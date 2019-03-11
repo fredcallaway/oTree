@@ -9,9 +9,9 @@
 
     <p> In this HIT you will play {{ session.config.num_games }} two-player
     games with many different real people. In each game, you will see a table
-    like the one below. You have to spend at least {{Constants.min_time}} seconds on each game. The other person will choose a column in the same way.
-    These two decision select one cell from the table, which determines the points
-    you will each receive.
+    like the one below. You will choose one of the three rows, and the other
+    person will choose a column in the same way. These two decision select one
+    cell from the table, which determines the points you will each receive.
 
 
     <div id="target1" class="target"></div>
@@ -27,11 +27,23 @@
 
     <div id="target2" class="target"></div>
     <br>
-    <p> After each game, you will be matched with a <b>new person</b> and play a <b>new game</b>.
+    <p>    
+    You will be playing against real people. For each game, you will be
+    matched with a <b>new person</b>. To keep things moving quickly, you will
+    sometimes be matched with a player who has already played the game in a
+    previous round. Although your move will not affect that player's score,
+    it will affect future players that get matched with you, just as your
+    score is determined by the previous player's move.
 
-    <p> Before beginning to play, you must pass a quiz to demonstrate that you
-        understand the rules. You must pass all three pages of the quiz before
-        you can continue.
+    <p>
+    One last thing. To prevent people from quickly clicking through the
+    experiment without thinking, we enforce that you spend a minimum of
+    {{Constants.min_time}} on each game.
+
+    <p> 
+    Before beginning to play, you must pass a quiz to demonstrate that you
+    understand the rules. You must pass all three pages of the quiz before you
+    can continue.
 
 
 
