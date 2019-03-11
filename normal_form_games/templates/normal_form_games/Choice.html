@@ -9,7 +9,7 @@
     <div id="target"></div>
     <input type="hidden" value="-1" name="choice" id="id_choice"/>
 
-<div class="centered">
+    <div class="centered">
 
 
     {% next_button %}
@@ -18,36 +18,19 @@
 
     {{ form.choice.errors }}
 
-    <div id="timer_div">
-        0
+    <div id="please_wait">
+        Please wait 
+        <span id="timer_span"> &nbsp; </span>
+        seconds before continuing.
     </div>
 </div>
 
     <script>
         var game = JSON.parse("{{ player.game }}");
+        var min_time = parseInt("{{Constants.min_time}}");
         $(document).ready(function () {
-          runGame('#target', game);
+          runGame('#target', game, min_time);
         });
-
-        var seconds_left = 0;
-        if ({{Constants.min_time}} == 0) {
-                $("#timer_div").text("");
-        }
-        else {
-            $('.otree-btn-next').hide();
-            var interval = setInterval(function() {
-                $('#timer_div').text(++seconds_left);
-
-                if (seconds_left >= {{Constants.min_time}})
-                {
-                $('#timer_div').text("");
-                    clearInterval(interval);
-                    $('.otree-btn-next').show();
-
-                }
-            }, 1000);
-        }
-
     </script>
 
 

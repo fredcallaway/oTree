@@ -34,6 +34,23 @@ function showResult(target, game, row, col) {
   ;
 }
 
+function makeTimer(seconds) {
+  console.log("makeTimer");
+  var seconds_left = seconds;
+  $("#timer_span").text(seconds_left);
+  return new Promise(function(resolve) {
+    var interval = setInterval(function() {
+      $('#timer_span').text(--seconds_left);
+      if (seconds_left == 0) {
+        $("#timer_span").text("&nbsp;");
+        clearInterval(interval);
+        resolve();
+      }
+      console.log(seconds_left);
+    }, 1000);
+  });
+}
+
 function showGame(target, game) {
   $(target)
     .append(render_game(game))
@@ -41,14 +58,13 @@ function showGame(target, game) {
   $('.game-row').removeClass('game-row');
 }
 
-function runGame(target, game) {
+function runGame(target, game, min_time) {
+  $('#please_wait').hide();
 
   let msg = $('<div>', {id: 'game-msg'});
   let rowmsg = $('<div>').appendTo(msg);
   let colmsg = $('<div>').appendTo(msg);
   $('.otree-btn-next').prop('disabled', true);
-
-
 
   $(target)
     .append(render_game(game))
@@ -56,9 +72,15 @@ function runGame(target, game) {
   ;
 
   rowmsg.html('Please choose a row.');
+  var timer = makeTimer(min_time);
 
 
   $('.game-row').click(function() {
+    $('#please_wait').show();
+    timer.then(value => {
+      $('.otree-btn-next').prop('disabled', false);
+      $('#please_wait').hide();
+    });
     let row = parseInt($(this).attr('value'));
     
     rowmsg.html(`You chose row ${row+1}.`);
@@ -81,6 +103,6 @@ function runGame(target, game) {
     }
 
     $('#id_choice').val(String(row));  // record choice
-    $('.otree-btn-next').prop('disabled', false);
+    // $('.otree-btn-next').prop('disabled', false);
   });
 }
