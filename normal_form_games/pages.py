@@ -14,7 +14,8 @@ class Choice(Page):
 
 
     def vars_for_template(self):
-        return {"play_rounds":Constants.num_rounds - 1}
+        min_time = self.session.config["min_time"]
+        return {"play_rounds":Constants.num_rounds - 1, "min_time":min_time}
 
     def is_displayed(self):
         return self.round_number < Constants.num_rounds
@@ -30,8 +31,10 @@ class ResultsWaitPage(WaitPage):
     '''
 
     def get_choices(self,prev_players, role, treatment):
+        prev_players = list(filter(lambda p: p.treatment == treatment and p.player_role == role, prev_players))
         choices = [p.choice for p in prev_players]
         choices = list(filter(lambda x: x in [0,1,2,3], choices))
+        print(choices)
         return choices
 
     def get_players_for_group(self, players):
@@ -42,6 +45,8 @@ class ResultsWaitPage(WaitPage):
         players_to_return = []
 
         prev_players = players[0].in_round(round -1).get_others_in_subsession()
+        prev_players.append(players[0].in_round(round -1))
+        # prev_players = players[0].in_round(round -1).get_players()
 
         row_choices = self.get_choices(prev_players, "row", "negative")
         col_choices = self.get_choices(prev_players, "col", "negative")
@@ -53,8 +58,8 @@ class ResultsWaitPage(WaitPage):
                 player.set_payoff()
             players_to_return.extend(players_negative)
 
-        row_choices = self.get_choices(prev_players, "row", "negative")
-        col_choices = self.get_choices(prev_players, "col", "negative")
+        row_choices = self.get_choices(prev_players, "row", "positive")
+        col_choices = self.get_choices(prev_players, "col", "positive")
         if len(row_choices) > 0 and len(col_choices) > 0:
             for player in  players_positive:
                 prev_player = player.in_round(self.round_number - 1)

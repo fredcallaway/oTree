@@ -6,18 +6,32 @@ from os import environ
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = {
-    'real_world_currency_per_point': 1.00,
-    'participation_fee': 0.00,
+    'real_world_currency_per_point': 0.01,
+    'participation_fee': 0.01,
     'doc': "",
-    "num_games": 50,
-    "seconds_per_game": 20,
+    'min_time':10,
+    'num_games':50,
 }
+
+mturk_hit_settings = {
+    'keywords': ['bonus', 'study'],
+    'title': 'Title for your experiment',
+    'description': 'Description for your experiment',
+    'frame_height': 700,
+    'preview_template': 'global/MTurkPreview.html',
+    'minutes_allotted_per_assignment': 60,
+    'expiration_hours': 7*24, # 7 days
+    #'grant_qualification_id': 'YOUR_QUALIFICATION_ID_HERE',# to prevent retakes
+    'qualification_requirements': []
+}
+
 
 SESSION_CONFIGS = [
     {
         'name': 'normal_form_games',
         'display_name': "Normal Form Games",
         'num_demo_participants': 8,
+        'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'lobby',
             'normal_form_games',
@@ -27,6 +41,7 @@ SESSION_CONFIGS = [
         'name': 'games_only',
         'display_name': "Games Only",
         'num_demo_participants': 2,
+        'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'normal_form_games',
         ],
@@ -35,6 +50,7 @@ SESSION_CONFIGS = [
         'name': 'lobby',
         'display_name': "Lobby",
         'num_demo_participants': 1,
+        'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'lobby',
         ],
