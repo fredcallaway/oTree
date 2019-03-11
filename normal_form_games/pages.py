@@ -22,7 +22,12 @@ class Choice(Page):
 
 class ResultsWaitPage(WaitPage):
     group_by_arrival_time = True
-    title_text = "Waiting for other players"
+    title_text = 'Waiting for another player'
+    body_text = '''
+        No one else has played this game yet, so we can't match you with
+        another player. Please wait until someone else plays this game so that
+        we can determine your payoff.
+    '''
 
     def get_choices(self,prev_players, role, treatment):
         choices = [p.choice for p in prev_players]
