@@ -19,7 +19,7 @@
     {{ form.choice.errors }}
 
     <div id="please_wait">
-        Please wait 
+        Please wait
         <span id="timer_span"> &nbsp; </span>
         seconds before continuing.
     </div>
@@ -27,7 +27,8 @@
 
     <script>
         var game = JSON.parse("{{ player.game }}");
-        var min_time = parseInt("{{Constants.min_time}}");
+        // var min_time = parseInt("{{Constants.min_time}}");
+        var min_time = parseInt("{{ min_time }}");
         $(document).ready(function () {
           runGame('#target', game, min_time);
         });
