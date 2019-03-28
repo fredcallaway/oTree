@@ -34,7 +34,6 @@ class ResultsWaitPage(WaitPage):
         prev_players = list(filter(lambda p: p.treatment == treatment and p.player_role == role, prev_players))
         choices = [p.choice for p in prev_players]
         choices = list(filter(lambda x: x in [0,1,2,3], choices))
-        print(choices)
         return choices
 
     def get_players_for_group(self, players):
