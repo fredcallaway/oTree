@@ -31,9 +31,12 @@ class Quiz(MyPage):
     form_fields = ['payoff_quiz', 'other_payoff_quiz']
 
     def vars_for_template(self):
+        row_num = self.player.choice_quiz
+        col_num = self.player.other_choice_quiz
+        texts = ["first", "second", "third"]
         return {
-            'row': self.player.choice_quiz + 1,
-            'col': self.player.other_choice_quiz + 1
+            'row': texts[row_num],
+            'col': texts[col_num]
         }
 
     def is_displayed(self):
