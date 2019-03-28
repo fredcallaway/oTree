@@ -10,6 +10,7 @@ SESSION_CONFIG_DEFAULTS = {
     'participation_fee': 0.01,
     'doc': "",
     'min_time':10,
+    "min_plays": 1,
     'num_games':50,
 }
 

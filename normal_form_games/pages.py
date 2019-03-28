@@ -49,7 +49,7 @@ class ResultsWaitPage(WaitPage):
 
         row_choices = self.get_choices(prev_players, "row", "negative")
         col_choices = self.get_choices(prev_players, "col", "negative")
-        if len(row_choices) > 0 and len(col_choices) > 0:
+        if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
             for player in  players_negative:
                 prev_player = player.in_round(self.round_number - 1)
                 opp_choices = col_choices if player.player_role == "row" else row_choices
@@ -59,7 +59,7 @@ class ResultsWaitPage(WaitPage):
 
         row_choices = self.get_choices(prev_players, "row", "positive")
         col_choices = self.get_choices(prev_players, "col", "positive")
-        if len(row_choices) > 0 and len(col_choices) > 0:
+        if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
             for player in  players_positive:
                 prev_player = player.in_round(self.round_number - 1)
                 opp_choices = col_choices if player.player_role == "row" else row_choices
