@@ -7,7 +7,7 @@ from os import environ
 
 SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 0.01,
-    'participation_fee': 0.01,
+    'participation_fee': 0.25,
     'doc': "",
     'min_time':10,
     "min_plays": 1,
@@ -97,4 +97,4 @@ DEMO_PAGE_INTRO_HTML = """ """
 SECRET_KEY = '!8=wtrajrj+gu-=pg6wd^!f-^rk$mj%$dob)yvl+0s+b#80vm_'
 
 # if an app is included in SESSION_CONFIGS, you don't need to list it here
-INSTALLED_APPS = ['otree']
+INSTALLED_APPS = ['otree', 'django.contrib.humanize']

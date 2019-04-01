@@ -1,6 +1,5 @@
 {% extends "global/Page.html" %}
 {% load otree static %}
-
 {% block title %}
     Instructions
 {% endblock %}
@@ -34,6 +33,11 @@
     previous round. Although your move will not affect that player's score,
     it will affect future players that get matched with you, just as your
     score is determined by the previous player's move.
+
+    <p>
+    Your bonus will be determined by the total number of points you earn in the
+    experiment. Each point is worth
+    ${{session.config.real_world_currency_per_point | floatformat:2}}
 
     <p>
     One last thing. To prevent people from quickly clicking through the
