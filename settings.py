@@ -41,7 +41,7 @@ SESSION_CONFIGS = [
     {
         'name': 'games_only',
         'display_name': "Games Only",
-        'num_demo_participants': 2,
+        'num_demo_participants': 4,
         'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'normal_form_games',

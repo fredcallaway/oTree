@@ -16,8 +16,8 @@ class Constants(BaseConstants):
     stakes = c(100)
     size = 3
     min_time = 10
-    ρ_pos = 0.8
-    ρ_neg = -0.8
+    ρ_pos = 0.9
+    ρ_neg = -0.9
     σ = 5.
 
 
