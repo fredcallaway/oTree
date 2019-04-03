@@ -95,7 +95,8 @@ class FinalSummary(Page):
 
     def vars_for_template(self):
         cumulative_payoff = sum([p.payoff for p in self.player.in_previous_rounds()])
-        return {"cumulative_payoff":cumulative_payoff}
+        return {"cumulative_payoff": cumulative_payoff, 
+                "dollars": cumulative_payoff.to_real_world_currency(self.session)}
 
 page_sequence = [
     ResultsWaitPage,
