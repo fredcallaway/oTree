@@ -18,6 +18,8 @@ class Choice(Page):
         return {"play_rounds":Constants.num_rounds - 1, "min_time":min_time}
 
     def is_displayed(self):
+        if self.player.participant.vars['failed']:
+            return False
         return self.round_number < Constants.num_rounds
 
 
@@ -69,11 +71,15 @@ class ResultsWaitPage(WaitPage):
         return players_to_return
 
     def is_displayed(self):
+        if self.player.participant.vars['failed']:
+            return False
         return self.round_number > 1
 
 
 class ResultsSummary(Page):
     def is_displayed(self):
+        if self.player.participant.vars['failed']:
+            return False
         return self.round_number > 1
 
     def vars_for_template(self):
@@ -83,6 +89,8 @@ class ResultsSummary(Page):
         }
 class FinalSummary(Page):
     def is_displayed(self):
+        if self.player.participant.vars['failed']:
+            return False
         return self.round_number == Constants.num_rounds
 
     def vars_for_template(self):

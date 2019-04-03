@@ -73,6 +73,7 @@ class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
             for p in self.get_players():
+                p.participant.vars["failed"] = False
                 p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
                 p.participant.vars['treatment'] = ["negative", "positive"][(int((1 + p.id_in_group)/2) % 2)]
 

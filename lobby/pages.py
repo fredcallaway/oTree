@@ -10,7 +10,11 @@ def rand_game(size):
 
 class MyPage(Page):
     def is_displayed(self):
-        return not self.participant.vars.get('done', False)
+        if self.player.participant.vars['failed'] == True:
+            return False
+        else:
+            return not self.player.participant.vars.get('done', False)
+        # return not self.player.participant.vars.get('done', False)
 
     def before_next_page(self):
         self.player.game = json.dumps(rand_game(Constants.size).tolist())
@@ -25,6 +29,12 @@ class Instructions(MyPage):
         self.player.participant.vars['done'] = False
         self.player.q_num = 1
 
+class FailPage(Page):
+    def is_displayed(self):
+        if self.player.participant.vars['failed'] == True:
+            return True
+        else:
+            return False
 
 class Quiz(MyPage):
     form_model = 'player'
@@ -40,18 +50,32 @@ class Quiz(MyPage):
         }
 
     def is_displayed(self):
-        return self.player.correct == True
+        if self.player.correct == False:
+            return False
+        else:
+            return super().is_displayed()
 
     def before_next_page(self):
         p = self.player
         p.q_num += 1
         game = json.loads(p.game)
         cell = game[p.choice_quiz][p.other_choice_quiz]
+        print(cell)
+        print(p.payoff_quiz, p.other_payoff_quiz)
         p.correct = (cell[0] == p.payoff_quiz and cell[1] == p.other_payoff_quiz)
+
+        if not p.correct and self.round_number == Constants.num_rounds:
+            p.participant.vars['failed'] = True
         super().before_next_page()
+
         # p.participant.vars['passing'] &= p.correct
 
 class LastQuiz(Quiz):
+    # def is_displayed(self):
+    #     if self.player.participant.vars['failed']:
+    #         return False
+    #     else:
+    #         return True
 
     def before_next_page(self):
         super().before_next_page()
@@ -76,6 +100,7 @@ page_sequence = [
     Quiz,
     Quiz,
     LastQuiz,
+    FailPage
     # ResultsWaitPage,
     # Results
 ]
