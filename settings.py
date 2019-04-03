@@ -11,7 +11,6 @@ SESSION_CONFIG_DEFAULTS = {
     'doc': "",
     'min_time':10,
     "min_plays": 1,
-    'num_games':50,
 }
 
 mturk_hit_settings = {
