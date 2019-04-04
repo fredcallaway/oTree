@@ -83,10 +83,11 @@ class ResultsSummary(Page):
         return self.round_number > 1
 
     def vars_for_template(self):
-
         return {
-            "prev_player":self.player.in_round(self.round_number - 1)
+            "prev_player": self.player.in_round(self.round_number - 1),
+            "earnings": self.participant.payoff.to_real_world_currency(self.session)
         }
+
 class FinalSummary(Page):
     def is_displayed(self):
         if self.player.participant.vars['failed']:
@@ -95,8 +96,11 @@ class FinalSummary(Page):
 
     def vars_for_template(self):
         cumulative_payoff = sum([p.payoff for p in self.player.in_previous_rounds()])
-        return {"cumulative_payoff": cumulative_payoff, 
-                "dollars": cumulative_payoff.to_real_world_currency(self.session)}
+        
+        return {
+            "cumulative_payoff": cumulative_payoff, 
+            "earnings": self.participant.payoff.to_real_world_currency(self.session)
+        }
 
 page_sequence = [
     ResultsWaitPage,
