@@ -73,7 +73,8 @@ class ResultsWaitPage(WaitPage):
     def is_displayed(self):
         if self.round_number == 1:
             join_num = self.session.vars["num_assigned"]
-            treat, role = self.session.vars["treat_cycle"][join_num % 4]
+            num_treats = len(self.session.vars["treat_cycle"])
+            treat, role = self.session.vars["treat_cycle"][join_num % num_treats]
             self.player.participant.vars["role"] = role
             self.player.participant.vars["treatment"] = treat
             self.session.vars["num_assigned"] = self.session.vars["num_assigned"] + 1

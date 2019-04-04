@@ -12,7 +12,7 @@ An experiment with normal form games
 class Constants(BaseConstants):
     name_in_url = 'game'
     players_per_group = None
-    num_rounds = 2
+    num_rounds = 51
     stakes = c(100)
     size = 3
     min_time = 10
@@ -74,6 +74,7 @@ class Subsession(BaseSubsession):
         if self.round_number == 1:
             self.session.vars["num_assigned"] = 0
             self.session.vars["treat_cycle"] = [("positive", "row"), ("positive", "col"), ("negative", "row"), ("negative", "col")]
+            # self.session.vars["treat_cycle"] = [("negative", "row"), ("negative", "col")]
             for p in self.get_players():
                 p.participant.vars["failed"] = False
                 # p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
