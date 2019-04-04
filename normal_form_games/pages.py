@@ -71,6 +71,20 @@ class ResultsWaitPage(WaitPage):
         return players_to_return
 
     def is_displayed(self):
+        if self.round_number == 1:
+            join_num = self.session.vars["num_assigned"]
+            treat, role = self.session.vars["treat_cycle"][join_num % 4]
+            self.player.participant.vars["role"] = role
+            self.player.participant.vars["treatment"] = treat
+            self.session.vars["num_assigned"] = self.session.vars["num_assigned"] + 1
+
+        self.player.treatment = self.player.participant.vars["treatment"]
+        self.player.player_role = self.player.participant.vars["role"]
+
+        treat = self.player.treatment
+        role = self.player.player_role
+        game = self.session.vars[self.round_number][treat][role]
+        self.player.game = json.dumps(game.tolist())
         if self.player.participant.vars['failed']:
             return False
         return self.round_number > 1
@@ -88,6 +102,8 @@ class ResultsSummary(Page):
             "earnings": self.participant.payoff.to_real_world_currency(self.session)
         }
 
+
+
 class FinalSummary(Page):
     def is_displayed(self):
         if self.player.participant.vars['failed']:
@@ -96,9 +112,9 @@ class FinalSummary(Page):
 
     def vars_for_template(self):
         cumulative_payoff = sum([p.payoff for p in self.player.in_previous_rounds()])
-        
+
         return {
-            "cumulative_payoff": cumulative_payoff, 
+            "cumulative_payoff": cumulative_payoff,
             "earnings": self.participant.payoff.to_real_world_currency(self.session)
         }
 

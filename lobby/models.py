@@ -19,7 +19,10 @@ class Constants(BaseConstants):
     min_time = 10
 
 class Subsession(BaseSubsession):
-    pass
+    def creating_session(self):
+        if self.round_number == 1:
+            for p in self.get_players():
+                p.participant.vars["failed"] = False
 
 
 class Group(BaseGroup):

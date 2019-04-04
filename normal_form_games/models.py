@@ -6,7 +6,7 @@ import random
 import numpy as np
 import json
 doc = """
-A demo of how rounds work in oTree, in the context of 'matching pennies'
+An experiment with normal form games
 """
 
 class Constants(BaseConstants):
@@ -72,10 +72,12 @@ same_games_dict[49] = np.array([[[7,4],[3,5],[4,0]], [[5,3],[3,7],[3,2]], [[0,3]
 class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
+            self.session.vars["num_assigned"] = 0
+            self.session.vars["treat_cycle"] = [("positive", "row"), ("positive", "col"), ("negative", "row"), ("negative", "col")]
             for p in self.get_players():
                 p.participant.vars["failed"] = False
-                p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
-                p.participant.vars['treatment'] = ["negative", "positive"][(int((1 + p.id_in_group)/2) % 2)]
+                # p.participant.vars['role'] = ["row", "col"][(p.id_in_group % 2)]
+                # p.participant.vars['treatment'] = ["negative", "positive"][(int((1 + p.id_in_group)/2) % 2)]
 
         round = self.round_number
         games_dict = dict()
@@ -92,11 +94,13 @@ class Subsession(BaseSubsession):
             games_dict["negative"]["row"] = rand_game(Constants.size, ρ=Constants.ρ_neg, σ=Constants.σ)
             games_dict["negative"]["col"] = transpose_game(games_dict["negative"]["row"])
 
+        self.session.vars[round] = games_dict
 
-        for p in self.get_players():
-            p.player_role = p.participant.vars['role']
-            p.treatment = p.participant.vars['treatment']
-            p.game = json.dumps(games_dict[p.treatment][p.player_role].tolist())
+
+        # for p in self.get_players():
+            # p.player_role = p.participant.vars['role']
+            # p.treatment = p.participant.vars['treatment']
+            # p.game = json.dumps(games_dict[p.treatment][p.player_role].tolist())
 
 
 
