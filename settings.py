@@ -22,8 +22,13 @@ mturk_hit_settings = {
     'preview_template': 'global/MTurkPreview.html',
     'minutes_allotted_per_assignment': 60,
     'expiration_hours': 7*24, # 7 days
-    #'grant_qualification_id': 'YOUR_QUALIFICATION_ID_HERE',# to prevent retakes
-    'qualification_requirements': []
+    'grant_qualification_id': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',# to prevent retakes
+    'qualification_requirements': [
+        {
+            'QualificationTypeId': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',
+            'Comparator': 'DoesNotExist',
+        }
+    ]
 }
 
 
