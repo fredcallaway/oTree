@@ -34,6 +34,7 @@ mturk_hit_settings = {
             'IntegerValues': [95]
         },
         {
+            'QualificationTypeId': "00000000000000000071",
             'Comparator': "EqualTo",
             'LocaleValues': [{
                 'Country': "US",
