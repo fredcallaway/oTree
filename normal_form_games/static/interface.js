@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+// THIS IS THE WRONG FILE IT SEEMS!!!! Looking parent folde _static/global/interface.js
 
 function render_game(game) {
   let result = ["<table class='game-table' border=2>"];
@@ -50,7 +51,7 @@ function runGame(target, game) {
 
   $('.game-row').click(function() {
     let row = parseInt($(this).attr('value'));
-    
+
     rowmsg.html(`You chose row ${row+1}.`);
 
     $('.game-cell').addClass('unchosen');
@@ -60,7 +61,7 @@ function runGame(target, game) {
         $(`.game-row-${i}`)
           .removeClass('unchosen')
           .addClass('chosen')
-        ;        
+        ;
       }
       else {
         $(`.game-row-${i}`)

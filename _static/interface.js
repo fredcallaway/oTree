@@ -7,7 +7,7 @@ function render_game(game) {
     // result.push('<td><button class="btn btn-secondary">X</button></td>');
     row.forEach((cell, j) => {
       result.push(`<td class='game-cell game-row-${i} game-col-${j} '>&nbsp;
-        <payouts><rowpay>${cell[0]}</rowpay>  |  <colpay>${cell[1]}</colpay></payouts>
+        <payouts><rowpay>${format_num(cell[0],2)}</rowpay>  |  <colpay>${format_num(cell[1],2)}</colpay></payouts>
         &nbsp;</td>`
       );
     });
@@ -15,6 +15,14 @@ function render_game(game) {
   });
   result.push("</table>");
   return result.join('\n');
+}
+function format_num(num, length) {
+    var r = "" + num;
+    while (r.length < length) {
+        r = "\xa0\xa0" + r;
+        // r =  r.padStart(1, "0");
+    }
+    return r;
 }
 
 function showResult(target, game, row, col) {
@@ -82,7 +90,7 @@ function runGame(target, game, min_time) {
       $('#please_wait').hide();
     });
     let row = parseInt($(this).attr('value'));
-    
+
     rowmsg.html(`You chose row ${row+1}.`);
 
     $('.game-cell').addClass('unchosen');
@@ -92,7 +100,7 @@ function runGame(target, game, min_time) {
         $(`.game-row-${i}`)
           .removeClass('unchosen')
           .addClass('chosen')
-        ;        
+        ;
       }
       else {
         $(`.game-row-${i}`)
