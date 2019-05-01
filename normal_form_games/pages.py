@@ -23,7 +23,8 @@ class Choice(Page):
         return self.round_number < Constants.num_rounds
 
     def before_next_page(self):
-        self.session.vars["plays_dict"][self.round_number][self.player.treatment][self.player.player_role].append(self.player.choice)
+        # self.session.vars["plays_dict"][self.round_number][self.player.treatment][self.player.player_role].append(self.player.choice)
+        self.session.vars["plays_dict"][self.round_number][self.player.player_role].append(self.player.choice)
 
 
 class ResultsWaitPage(WaitPage):
@@ -36,18 +37,19 @@ class ResultsWaitPage(WaitPage):
     '''
 
     # def get_choices(self,prev_players, role, treatment):
-    def get_choices(self,round, role, treatment):
+    def get_choices(self,round, role):
         # prev_players = list(filter(lambda p: p.treatment == treatment and p.player_role == role, prev_players))
         # choices = [p.choice for p in prev_players]
         # choices = list(filter(lambda x: x in [0,1,2,3], choices))
-        choices = self.session.vars["plays_dict"][round][treatment][role]
+        # choices = self.session.vars["plays_dict"][round][treatment][role]
+        choices = self.session.vars["plays_dict"][round][role]
         return choices
 
     def get_players_for_group(self, players):
         round = self.round_number
 
-        players_negative = list(filter(lambda p: p.treatment == "negative", players))
-        players_positive = list(filter(lambda p: p.treatment == "positive", players))
+        # players_negative = list(filter(lambda p: p.treatment == "negative", players))
+        # players_positive = list(filter(lambda p: p.treatment == "positive", players))
         players_to_return = []
 
         # prev_players = players[0].in_round(round -1).get_others_in_subsession()
@@ -56,46 +58,39 @@ class ResultsWaitPage(WaitPage):
 
         # row_choices = self.get_choices(prev_players, "row", "negative")
         # col_choices = self.get_choices(prev_players, "col", "negative")
-        row_choices = self.get_choices(round - 1, "row", "negative")
-        col_choices = self.get_choices(round - 1, "col", "negative")
-        if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
-            for player in  players_negative:
+        row_choices = self.get_choices(round - 1, "row")
+        col_choices = self.get_choices(round - 1, "col")
+        if not self.session.vars['min_plays_dict'][round]:
+            if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
+                self.session.vars['min_plays_dict'][round] = True
+        print("----------")
+        print(row_choices)
+        print(col_choices)
+        if self.session.vars['min_plays_dict'][round]:
+            for player in  players:
                 prev_player = player.in_round(self.round_number - 1)
                 opp_choices = col_choices if player.player_role == "row" else row_choices
                 prev_player.other_choice = random.choice(opp_choices)
                 # player.set_payoff()
                 prev_player.set_payoff()
-            players_to_return.extend(players_negative)
+            players_to_return.extend(players)
 
-        # row_choices = self.get_choices(prev_players, "row", "positive")
-        # col_choices = self.get_choices(prev_players, "col", "positive")
-        row_choices = self.get_choices(round - 1, "row", "positive")
-        col_choices = self.get_choices(round - 1, "col", "positive")
-        if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
-            for player in  players_positive:
-                prev_player = player.in_round(self.round_number - 1)
-                opp_choices = col_choices if player.player_role == "row" else row_choices
-                prev_player.other_choice = random.choice(opp_choices)
-                # player.set_payoff()
-                prev_player.set_payoff()
-            players_to_return.extend(players_positive)
         return players_to_return
 
     def is_displayed(self):
         if self.round_number == 1:
             join_num = self.session.vars["num_assigned"]
-            num_treats = len(self.session.vars["treat_cycle"])
-            treat, role = self.session.vars["treat_cycle"][join_num % num_treats]
+            num_treats = len(self.session.vars["role_cycle"])
+            role = self.session.vars["role_cycle"][join_num % num_treats]
             self.player.participant.vars["role"] = role
-            self.player.participant.vars["treatment"] = treat
+            self.player.participant.vars["treatment"] = self.session.config["treatment"]
             self.session.vars["num_assigned"] = self.session.vars["num_assigned"] + 1
 
         self.player.treatment = self.player.participant.vars["treatment"]
         self.player.player_role = self.player.participant.vars["role"]
 
-        treat = self.player.treatment
         role = self.player.player_role
-        game = self.session.vars[self.round_number][treat][role]
+        game = self.session.vars[self.round_number][role]
         self.player.game = json.dumps(game.tolist())
         if self.player.participant.vars['failed']:
             return False

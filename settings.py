@@ -6,12 +6,13 @@ from os import environ
 # e.g. self.session.config['participation_fee']
 
 SESSION_CONFIG_DEFAULTS = {
-    'real_world_currency_per_point': 0.01,
+    'real_world_currency_per_point': 0.0066666,
     'participation_fee': 0.25,
     'doc': "",
-    'min_time':5,
+    'min_time':10,
     "min_plays": 1,
-    'num_games':51,
+    'num_games':50,
+    "treatment":"negative"
 }
 
 mturk_hit_settings = {
@@ -58,7 +59,7 @@ SESSION_CONFIGS = [
     {
         'name': 'games_only',
         'display_name': "Games Only",
-        'num_demo_participants': 4,
+        'num_demo_participants': 8,
         'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'normal_form_games',

@@ -29,6 +29,11 @@ class Instructions(MyPage):
         self.player.participant.vars['done'] = False
         self.player.q_num = 1
 
+    def vars_for_template(self):
+        return {
+            "points_per_dollar": round(1/self.session.config['real_world_currency_per_point']),
+        }
+
 class FailPage(Page):
     def is_displayed(self):
         if self.player.participant.vars['failed'] == True:

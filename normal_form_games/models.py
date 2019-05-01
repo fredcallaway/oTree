@@ -48,18 +48,18 @@ def transpose_game(game):
 
 
 same_games_dict = dict()
-# same_games_dict[1] = np.array([[[4,0],[4,1],[4,4]], [[8,8],[3,5],[0,4]], [[5,3],[5,5],[1,4]]]) # Weak link
-# same_games_dict[2] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[1,3],[0,2],[1,1]]]) # Prisoners
-# same_games_dict[3] = np.array([[[9,9],[4,6],[0,4]], [[6,4],[6,6],[1,4]], [[4,0],[4,1],[4,4]]]) # Stag-hunt
-# same_games_dict[4] = np.array([[[8,8],[7,8],[1,4]], [[8,7],[9,9],[0,5]], [[6,1],[5,0],[6,6]]]) # Sym
-# same_games_dict[5] = np.array([[[7,4],[3,5],[4,0]], [[5,3],[3,7],[3,2]], [[0,3],[1,3],[9,9]]]) # Max
-## same_games_dict[6] = np.array([[[2,2],[4,0],[4,0]], [[0,4],[3,3],[5,1]], [[0,4],[1,5],[4,4]]]) # Travellers
 
-same_games_dict[31] = np.array([[[4,0],[4,1],[4,4]], [[8,8],[3,5],[0,4]], [[5,3],[5,5],[1,4]]]) # Weak link
-same_games_dict[37] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[1,3],[0,2],[1,1]]]) # Prisoners
-same_games_dict[41] = np.array([[[9,9],[4,6],[0,4]], [[6,4],[6,6],[1,4]], [[4,0],[4,1],[4,4]]]) # Stag-hunt
-same_games_dict[44] = np.array([[[8,8],[7,8],[1,4]], [[8,7],[9,9],[0,5]], [[6,1],[5,0],[6,6]]]) # Sym
-same_games_dict[49] = np.array([[[7,4],[3,5],[4,0]], [[5,3],[3,7],[3,2]], [[0,3],[1,3],[9,9]]]) # Max
+# same_games_dict[31] = np.array([[[4,0],[4,1],[4,4]], [[8,8],[3,5],[0,4]], [[5,3],[5,5],[1,4]]]) # Weak link
+# same_games_dict[37] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[1,3],[0,2],[1,1]]]) # Prisoners
+# same_games_dict[41] = np.array([[[9,9],[4,6],[0,4]], [[6,4],[6,6],[1,4]], [[4,0],[4,1],[4,4]]]) # Stag-hunt
+# same_games_dict[44] = np.array([[[8,8],[7,8],[1,4]], [[8,7],[9,9],[0,5]], [[6,1],[5,0],[6,6]]]) # Sym
+# same_games_dict[49] = np.array([[[7,4],[3,5],[4,0]], [[5,3],[3,7],[3,2]], [[0,3],[1,3],[9,9]]]) # Max
+
+same_games_dict[1] = np.array([[[8,8],[3,5],[0,4]], [[5,3],[5,5],[2,4]], [[4,0],[4,2],[4,4]]]) # Weak link
+same_games_dict[2] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[0,1],[1,1],[1,1]]]) # Prisoners
+same_games_dict[3] = np.array([[[4,4],[4,1],[4,0]], [[1,4],[6,6],[6,4]], [[0,4],[4,6],[9,9]]]) # Stag-hunt
+same_games_dict[4] = np.array([[[8,8],[7,5],[2,4]], [[5,7],[9,9],[0,5]], [[4,2],[5,0],[6,6]]]) # Sym
+same_games_dict[5] = np.array([[[4,4],[3,7],[5,0]], [[7,3],[3,3],[4,2]], [[0,5],[2,4],[9,9]]]) # Max
 
 
 
@@ -67,8 +67,12 @@ class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
             self.session.vars["num_assigned"] = 0
-            self.session.vars["treat_cycle"] = [("positive", "row"), ("positive", "col"), ("negative", "row"), ("negative", "col")]
+            # self.session.vars["treat_cycle"] = [("positive", "row"), ("positive", "col"), ("negative", "row"), ("negative", "col")]
+            self.session.vars["role_cycle"] = ['row', 'col']
             self.session.vars["plays_dict"] = dict()
+            self.session.vars["min_plays_dict"] = dict()
+            for i in range(0, Constants.num_rounds + 1):
+                self.session.vars["min_plays_dict"][i] = False
             # self.session.vars["treat_cycle"] = [("negative", "row"), ("negative", "col")]
             for p in self.get_players():
                 p.participant.vars["failed"] = False
@@ -77,22 +81,18 @@ class Subsession(BaseSubsession):
 
         round = self.round_number
         games_dict = dict()
-        games_dict["positive"] = dict()
-        games_dict["negative"] = dict()
+        ρ = Constants.ρ_pos if self.session.config["treatment"] == "positive"  else Constants.ρ_neg
+        # games_dict["positive"] = dict()
+        # games_dict["negative"] = dict()
         if round in same_games_dict.keys():
-            games_dict["positive"]["row"] = same_games_dict[round]
-            games_dict["positive"]["col"] = transpose_game(games_dict["positive"]["row"])
-            games_dict["negative"]["row"] = same_games_dict[round]
-            games_dict["negative"]["col"] = transpose_game(games_dict["negative"]["row"])
+            games_dict["row"] = same_games_dict[round]
+            games_dict["col"] = transpose_game(games_dict["row"])
         else:
-            games_dict["positive"]["row"] = rand_game(Constants.size, ρ=Constants.ρ_pos, σ=Constants.σ)
-            games_dict["positive"]["col"] = transpose_game(games_dict["positive"]["row"])
-            games_dict["negative"]["row"] = rand_game(Constants.size, ρ=Constants.ρ_neg, σ=Constants.σ)
-            games_dict["negative"]["col"] = transpose_game(games_dict["negative"]["row"])
+            games_dict["row"] = rand_game(Constants.size, ρ=ρ, σ=Constants.σ)
+            games_dict["col"] = transpose_game(games_dict["row"])
 
         round_plays_dict = dict()
-        round_plays_dict["positive"] = {"row":[], "col":[]}
-        round_plays_dict["negative"] = {"row":[], "col":[]}
+        round_plays_dict = {"row":[], "col":[]}
         self.session.vars["plays_dict"][round] = round_plays_dict
 
         self.session.vars[round] = games_dict
@@ -106,14 +106,7 @@ class Subsession(BaseSubsession):
 
 
 class Group(BaseGroup):
-    def set_payoffs(self):
-        p1, p2 = self.get_players()
-        p1.other_choice = p2.choice
-        p2.other_choice = p1.choice
-
-        game = json.loads(p1.game)
-        p1.payoff = c(game[p1.choice][p2.choice][0])
-        p2.payoff = c(game[p1.choice][p2.choice][1])
+    pass
 
 
 class Player(BasePlayer):
