@@ -7,7 +7,7 @@ function render_game(game) {
     // result.push('<td><button class="btn btn-secondary">X</button></td>');
     row.forEach((cell, j) => {
       result.push(`<td class='game-cell game-row-${i} game-col-${j} '>&nbsp;
-        <payouts><rowpay>${format_num(cell[0],2)}</rowpay>  |  <colpay>${format_num(cell[1],2)}</colpay></payouts>
+        <payouts><rowpay>${format_num(cell[0],1)}</rowpay>  |  <colpay>${format_num(cell[1],1)}</colpay></payouts>
         &nbsp;</td>`
       );
     });

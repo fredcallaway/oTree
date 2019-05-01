@@ -16,12 +16,12 @@ class Constants(BaseConstants):
     stakes = c(100)
     size = 3
     min_time = 10
-    ρ_pos = 0.8
-    ρ_neg = -0.8
-    σ = 50.
+    ρ_pos = 0.9
+    ρ_neg = -0.9
+    σ = 5.
 
 
-def sample_cell(ρ=0, max=99.5, min=-0.5, μ=50, σ=3):
+def sample_cell(ρ=0, max=9.5, min=-0.5, μ=5, σ=5):
     r,c = np.random.multivariate_normal([0,0], [[1, ρ], [ρ, 1]])*σ + μ
     r = round(r)
     c = round(c)
@@ -32,11 +32,11 @@ def sample_cell(ρ=0, max=99.5, min=-0.5, μ=50, σ=3):
     return [int(r),int(c)]
 
 
-def rand_game(size, ρ=0., σ=3):
+def rand_game(size, ρ=0., σ=5):
     game = np.zeros((size,size,2))
     for i in range(size):
         for j in range(size):
-            r,c = sample_cell(ρ=ρ, max=99.5, min=-0.5, μ=50, σ=σ)
+            r,c = sample_cell(ρ=ρ, max=9.5, min=-0.5, μ=5, σ=σ)
             game[i,j,0] = r
             game[i,j,1] = c
     return game
