@@ -8,7 +8,7 @@ from os import environ
 SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 0.0066666,
     'participation_fee': 0.25,
-    'min_players_start': 3,
+    'min_players_start': 2,
     'doc': "",
     'min_time': 5,
     "min_plays": 1,
@@ -54,6 +54,7 @@ SESSION_CONFIGS = [
         'mturk_hit_settings': mturk_hit_settings,
         'app_sequence': [
             'lobby',
+            'waiting',
             'normal_form_games',
         ],
     },
