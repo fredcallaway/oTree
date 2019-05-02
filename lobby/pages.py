@@ -73,39 +73,18 @@ class Quiz(MyPage):
             p.participant.vars['failed'] = True
         super().before_next_page()
 
-        # p.participant.vars['passing'] &= p.correct
 
 class LastQuiz(Quiz):
-    # def is_displayed(self):
-    #     if self.player.participant.vars['failed']:
-    #         return False
-    #     else:
-    #         return True
-
     def before_next_page(self):
         super().before_next_page()
         p = self.player
         if p.correct:
             p.participant.vars['done'] = True
 
-
-
-class ResultsWaitPage(WaitPage):
-
-    def after_all_players_arrive(self):
-        pass
-
-
-class Results(Page):
-    pass
-
-
 page_sequence = [
     Instructions,
-    Quiz,
-    Quiz,
+    # Quiz,
+    # Quiz,
     LastQuiz,
-    FailPage
-    # ResultsWaitPage,
-    # Results
+    FailPage,
 ]
