@@ -12,7 +12,7 @@ SESSION_CONFIG_DEFAULTS = {
     'min_time':5,
     "min_plays": 1,
     'num_games':50,
-    "treatment":"negative"
+    "treatment":"positive"
 }
 
 mturk_hit_settings = {
