@@ -20,7 +20,8 @@ class Choice(Page):
     def is_displayed(self):
         if self.player.participant.vars['failed']:
             return False
-        return self.round_number < Constants.num_rounds
+        else:
+            return self.round_number < Constants.num_rounds
 
     def before_next_page(self):
         # self.session.vars["plays_dict"][self.round_number][self.player.treatment][self.player.player_role].append(self.player.choice)
@@ -35,6 +36,7 @@ class ResultsWaitPage(WaitPage):
         another player. Please wait until someone else plays this game so that
         we can determine your payoff.
     '''
+    # timeout_seconds = 60
 
     # def get_choices(self,prev_players, role, treatment):
     def get_choices(self,round, role):
@@ -67,31 +69,41 @@ class ResultsWaitPage(WaitPage):
         print(row_choices)
         print(col_choices)
         if self.session.vars['min_plays_dict'][round]:
+            random.shuffle(players)
             for player in  players:
-                prev_player = player.in_round(self.round_number - 1)
-                opp_choices = col_choices if player.player_role == "row" else row_choices
+                prev_player = player.in_round(round - 1)
+                opp_choices = col_choices if prev_player.player_role == "row" else row_choices
                 prev_player.other_choice = random.choice(opp_choices)
-                # player.set_payoff()
                 prev_player.set_payoff()
+
+                self.session.vars["num_assigned"][round] += 1
+                join_num = self.session.vars["num_assigned"][round]
+                role = ["row", "col"][join_num % 2]
+                player.participant.vars["treatment"] = self.session.config["treatment"]
+
+                player.treatment = player.participant.vars["treatment"]
+                player.player_role = role
+
+                game = self.session.vars[round][role]
+                player.game = json.dumps(game.tolist())
             players_to_return.extend(players)
 
         return players_to_return
 
     def is_displayed(self):
         if self.round_number == 1:
-            join_num = self.session.vars["num_assigned"]
-            num_treats = len(self.session.vars["role_cycle"])
-            role = self.session.vars["role_cycle"][join_num % num_treats]
-            self.player.participant.vars["role"] = role
+            round = self.round_number
+            self.session.vars["num_assigned"][round] += 1
+            join_num = self.session.vars["num_assigned"][round]
+            role = ["row", "col"][join_num % 2]
             self.player.participant.vars["treatment"] = self.session.config["treatment"]
-            self.session.vars["num_assigned"] = self.session.vars["num_assigned"] + 1
 
-        self.player.treatment = self.player.participant.vars["treatment"]
-        self.player.player_role = self.player.participant.vars["role"]
+            self.player.treatment = self.player.participant.vars["treatment"]
+            self.player.player_role = role
 
-        role = self.player.player_role
-        game = self.session.vars[self.round_number][role]
-        self.player.game = json.dumps(game.tolist())
+            game = self.session.vars[round][role]
+            self.player.game = json.dumps(game.tolist())
+
         if self.player.participant.vars['failed']:
             return False
         return self.round_number > 1

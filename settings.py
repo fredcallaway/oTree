@@ -11,7 +11,7 @@ SESSION_CONFIG_DEFAULTS = {
     'min_players_start': 3,
     'doc': "",
     'min_time': 5,
-    "min_plays": 5,
+    "min_plays": 1,
     'num_games': 50,
     "treatment": "positive"
 }
