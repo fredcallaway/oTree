@@ -24,24 +24,24 @@ mturk_hit_settings = {
     'minutes_allotted_per_assignment': 60,
     'expiration_hours': 7*24, # 7 days
     # 'grant_qualification_id': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',# to prevent retakes
-    # 'qualification_requirements': [
-    #     {
-    #         'QualificationTypeId': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',
-    #         'Comparator': 'DoesNotExist',
-    #     },
-    #     {
-    #         'QualificationTypeId': "000000000000000000L0",
-    #         'Comparator': "GreaterThan",
-    #         'IntegerValues': [95]
-    #     },
-    #     {
-    #         'QualificationTypeId': "00000000000000000071",
-    #         'Comparator': "EqualTo",
-    #         'LocaleValues': [{
-    #             'Country': "US",
-    #         }]
-    #     }
-    # ]
+    'qualification_requirements': [
+        # {
+        #     'QualificationTypeId': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',
+        #     'Comparator': 'DoesNotExist',
+        # },
+        {
+            'QualificationTypeId': "000000000000000000L0",
+            'Comparator': "GreaterThan",
+            'IntegerValues': [95]
+        },
+        {
+            'QualificationTypeId': "00000000000000000071",
+            'Comparator': "EqualTo",
+            'LocaleValues': [{
+                'Country': "US",
+            }]
+        }
+    ]
 }
 
 
