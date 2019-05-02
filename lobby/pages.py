@@ -73,15 +73,8 @@ class Quiz(MyPage):
             p.participant.vars['failed'] = True
         super().before_next_page()
 
-        # p.participant.vars['passing'] &= p.correct
 
 class LastQuiz(Quiz):
-    # def is_displayed(self):
-    #     if self.player.participant.vars['failed']:
-    #         return False
-    #     else:
-    #         return True
-
     def before_next_page(self):
         super().before_next_page()
         p = self.player
@@ -89,15 +82,22 @@ class LastQuiz(Quiz):
             p.participant.vars['done'] = True
 
 
-
 class ResultsWaitPage(WaitPage):
+    group_by_arrival_time = True
+    title_text = 'Waiting for other players to complete the instructions'
+    body_text = '''
+        The experiment will begin when ten participants have completed the
+        instructions. This helps to ensure that we can match you with other
+        players quickly, without making you wait throughout the experiment.
+    '''
 
-    def after_all_players_arrive(self):
-        pass
-
-
-class Results(Page):
-    pass
+    def get_players_for_group(self, waiting_players):
+        print('get players', waiting_players)
+        ready = (self.session.vars["minimum_players_passed"] or
+                 len(waiting_players) >= self.session.config['min_players_start'])
+        if ready:
+            self.session.vars["minimum_players_passed"] = True
+            return waiting_players
 
 
 page_sequence = [
@@ -105,7 +105,6 @@ page_sequence = [
     Quiz,
     Quiz,
     LastQuiz,
-    FailPage
-    # ResultsWaitPage,
-    # Results
+    FailPage,
+    ResultsWaitPage,
 ]

@@ -20,6 +20,7 @@ class Constants(BaseConstants):
 
 class Subsession(BaseSubsession):
     def creating_session(self):
+        self.session.vars["minimum_players_passed"] = False
         if self.round_number == 1:
             for p in self.get_players():
                 p.participant.vars["failed"] = False
