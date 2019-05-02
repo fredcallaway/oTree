@@ -10,8 +10,9 @@ SESSION_CONFIG_DEFAULTS = {
     'participation_fee': 0.25,
     'doc': "",
     'min_time': 5,
-    "min_plays": 1,
+    "min_plays": 3,
     'num_games': 50,
+    'min_wait_time': 15,
     "treatment": "positive"
 }
 

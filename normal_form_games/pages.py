@@ -7,6 +7,7 @@ import pickle as pkl
 import pandas as pd
 import json
 import numpy as np
+import time
 
 class Choice(Page):
     form_model = 'player'
@@ -50,6 +51,9 @@ class ResultsWaitPage(WaitPage):
     def get_players_for_group(self, players):
         round = self.round_number
 
+        if self.session.vars["time_waited"][round] == 0:
+            self.session.vars["time_waited"][round] = time.time()
+
         # players_negative = list(filter(lambda p: p.treatment == "negative", players))
         # players_positive = list(filter(lambda p: p.treatment == "positive", players))
         players_to_return = []
@@ -62,8 +66,11 @@ class ResultsWaitPage(WaitPage):
         # col_choices = self.get_choices(prev_players, "col", "negative")
         row_choices = self.get_choices(round - 1, "row")
         col_choices = self.get_choices(round - 1, "col")
+
+        time_diff = time.time() - self.session.vars["time_waited"][round]
         if not self.session.vars['min_plays_dict'][round]:
-            if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
+            # if len(row_choices) >= self.session.config["min_plays"] and len(col_choices) >= self.session.config["min_plays"]:
+            if (len(players) >= self.session.config["min_plays"] or time_diff > self.session.config["min_wait_time"]) and len(row_choices) > 0 and len(col_choices) > 0:
                 self.session.vars['min_plays_dict'][round] = True
         print("----------")
         print(row_choices)
@@ -111,6 +118,25 @@ class ResultsWaitPage(WaitPage):
 
 class ResultsSummary(Page):
     def is_displayed(self):
+        round = self.round_number
+
+        # if round > 1:
+        #     prev_player = self.player.in_round(round - 1)
+        #     opp_role = "col" if prev_player.player_role == "row" else "row"
+        #     opp_choices = self.session.vars["plays_dict"][round-1][opp_role]
+        #     prev_player.other_choice = random.choice(opp_choices)
+        #     prev_player.set_payoff()
+
+        # self.session.vars["num_assigned"][round] += 1
+        # join_num = self.session.vars["num_assigned"][round]
+        # role = ["row", "col"][join_num % 2]
+        # self.player.participant.vars["treatment"] = self.session.config["treatment"]
+        #
+        # self.player.treatment = self.player.participant.vars["treatment"]
+        # self.player.player_role = role
+        #
+        # game = self.session.vars[round][role]
+        # self.player.game = json.dumps(game.tolist())
         if self.player.participant.vars['failed']:
             return False
         return self.round_number > 1

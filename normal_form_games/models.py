@@ -70,6 +70,7 @@ class Subsession(BaseSubsession):
     def creating_session(self):
         if self.round_number == 1:
             self.session.vars["num_assigned"] = [0]*(Constants.num_rounds+2) ## Todo: find right value
+            self.session.vars["time_waited"] = [0]*(Constants.num_rounds+2) ## Todo: find right value
             # self.session.vars["treat_cycle"] = [("positive", "row"), ("positive", "col"), ("negative", "row"), ("negative", "col")]
             # self.session.vars["role_cycle"] = ['row', 'col']
             self.session.vars["plays_dict"] = dict()
