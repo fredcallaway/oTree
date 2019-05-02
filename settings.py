@@ -9,7 +9,7 @@ SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 0.0066666,
     'participation_fee': 0.25,
     'doc': "",
-    'min_time':10,
+    'min_time':5,
     "min_plays": 1,
     'num_games':50,
     "treatment":"negative"
