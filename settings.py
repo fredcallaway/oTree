@@ -9,26 +9,26 @@ SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 0.0066666,
     'participation_fee': 0.25,
     'doc': "",
-    'min_time':5,
-    "min_plays": 1,
-    'num_games':50,
-    "treatment":"positive"
+    'min_time': 5,
+    "min_plays": 5,
+    'num_games': 50,
+    "treatment": "positive"
 }
 
 mturk_hit_settings = {
     'keywords': ['bonus', 'study'],
-    'title': 'Title for your experiment',
-    'description': 'Description for your experiment',
+    'title': 'Multiplayer decision making experiment',
+    'description': 'Earn a bonus ($2 on average) in this ~15 minute experiment.',
     'frame_height': 700,
     'preview_template': 'global/MTurkPreview.html',
     'minutes_allotted_per_assignment': 60,
     'expiration_hours': 7*24, # 7 days
-    # 'grant_qualification_id': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',# to prevent retakes
+    'grant_qualification_id': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',# to prevent retakes
     'qualification_requirements': [
-        # {
-        #     'QualificationTypeId': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',
-        #     'Comparator': 'DoesNotExist',
-        # },
+        {
+            'QualificationTypeId': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',
+            'Comparator': 'DoesNotExist',
+        },
         {
             'QualificationTypeId': "000000000000000000L0",
             'Comparator': "GreaterThan",
