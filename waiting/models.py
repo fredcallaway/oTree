@@ -27,4 +27,4 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    pass
+    join_time = models.FloatField(initial=0)

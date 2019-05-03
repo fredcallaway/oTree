@@ -33,7 +33,7 @@ class ResultsWaitPage(WaitPage):
     body_text = '''
         No one else has played this game yet, so we can't match you with
         another player. Please wait until someone else plays this game so that
-        we can determine your payoff.
+        we can determine your payoff. Remember that you are being paid an hourly wage of $7 for the time spent on this wait page.
     '''
 
     def get_choices(self,round, role):
@@ -52,12 +52,23 @@ class ResultsWaitPage(WaitPage):
         col_choices = self.get_choices(round - 1, "col")
 
         time_diff = time.time() - self.session.vars["time_waited"][round]
+
+        for player in players:
+            if player.join_time == 0:
+                player.join_time = time.time()
         if not self.session.vars['min_plays_dict'][round]:
             if (len(players) >= self.session.config["min_plays"] or time_diff > self.session.config["min_wait_time"]) and len(row_choices) > 0 and len(col_choices) > 0:
                 self.session.vars['min_plays_dict'][round] = True
         if self.session.vars['min_plays_dict'][round]:
             random.shuffle(players)
             for player in  players:
+                if 'tot_wait_time' in player.participant.vars.keys():
+                    player.participant.vars["tot_wait_time"] += time.time() - player.join_time
+                else:
+                    player.participant.vars["tot_wait_time"] = time.time() - player.join_time
+
+                print(player.participant.vars["tot_wait_time"])
+
                 prev_player = player.in_round(round - 1)
                 opp_choices = col_choices if prev_player.player_role == "row" else row_choices
                 prev_player.other_choice = random.choice(opp_choices)
@@ -118,10 +129,13 @@ class FinalSummary(Page):
 
     def vars_for_template(self):
         cumulative_payoff = sum([p.payoff for p in self.player.in_previous_rounds()])
+        wait_bonus = min(self.player.participant.vars['tot_wait_time']*self.session.config['pay_for_waiting'], self.session.config['max_pay_for_wainting'])
+        self.player.payoff = wait_bonus/self.session.config['real_world_currency_per_point']
 
         return {
             "cumulative_payoff": cumulative_payoff,
-            "earnings": self.participant.payoff.to_real_world_currency(self.session)
+            "earnings": self.participant.payoff.to_real_world_currency(self.session),
+            'wait_bonus': round(wait_bonus, 2)
         }
 
 page_sequence = [

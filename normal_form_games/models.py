@@ -12,7 +12,7 @@ An experiment with normal form games
 class Constants(BaseConstants):
     name_in_url = 'game'
     players_per_group = None
-    num_rounds = 51
+    num_rounds = 6
     stakes = c(100)
     size = 3
     ρ_pos = 0.9
@@ -108,6 +108,7 @@ class Player(BasePlayer):
     other_choice = models.IntegerField()
     player_role = models.StringField()
     treatment = models.StringField()
+    join_time = models.FloatField(initial=0)
 
     def set_payoff(self):
         # prev_player = self.in_round(self.round_number - 1)

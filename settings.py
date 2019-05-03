@@ -14,13 +14,15 @@ SESSION_CONFIG_DEFAULTS = {
     "min_plays": 6,
     'num_games': 50,
     'min_wait_time': 15,
+    'pay_for_waiting': 7/3600,
+    'max_pay_for_wainting': 1,
     "treatment": "positive"
 }
 
 mturk_hit_settings = {
     'keywords': ['bonus', 'study'],
     'title': 'Multiplayer decision making experiment',
-    'description': 'Earn a bonus ($2 on average) in this ~15 minute experiment.',
+    'description': 'Earn a bonus ($2 on average) in this ~17 minute experiment.',
     'frame_height': 700,
     'preview_template': 'global/MTurkPreview.html',
     'minutes_allotted_per_assignment': 60,
