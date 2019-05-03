@@ -83,8 +83,8 @@ class LastQuiz(Quiz):
 
 page_sequence = [
     Instructions,
-    # Quiz,
-    # Quiz,
+    Quiz,
+    Quiz,
     LastQuiz,
     FailPage,
 ]

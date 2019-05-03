@@ -8,10 +8,10 @@ from os import environ
 SESSION_CONFIG_DEFAULTS = {
     'real_world_currency_per_point': 0.0066666,
     'participation_fee': 0.25,
-    'min_players_start': 2,
+    'min_players_start': 10,
     'doc': "",
     'min_time': 5,
-    "min_plays": 3,
+    "min_plays": 6,
     'num_games': 50,
     'min_wait_time': 15,
     "treatment": "positive"
