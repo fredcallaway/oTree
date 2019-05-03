@@ -23,7 +23,7 @@ mturk_hit_settings = {
     'description': 'Earn a bonus ($2 on average) in this ~15 minute experiment.',
     'frame_height': 700,
     'preview_template': 'global/MTurkPreview.html',
-    'minutes_allotted_per_assignment': 60,
+    'minutes_allotted_per_assignment': 30,
     'expiration_hours': 7*24, # 7 days
     'grant_qualification_id': '3NMEEDRLC2LPZNWS1PU99XGRY40PQV',# to prevent retakes
     'qualification_requirements': [
