@@ -31,9 +31,9 @@ class ResultsWaitPage(WaitPage):
     group_by_arrival_time = True
     title_text = 'Waiting for another player'
     body_text = '''
-        No one else has played this game yet, so we can't match you with
-        another player. Please wait until someone else plays this game so that
-        we can determine your payoff.
+        Not enough players have played this game yet, so we can't match you
+        with another player. Please wait until more people complete the
+        previous round so that we can match you with a new person.
     '''
 
     def get_choices(self,round, role):
