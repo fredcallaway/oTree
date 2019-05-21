@@ -48,13 +48,13 @@ def transpose_game(game):
 
 same_games_dict = dict()
 
-same_games_dict[31] = np.array([[[8,8],[2,5],[0,4]], [[5,2],[5,5],[2,4]], [[4,0],[4,2],[4,4]]]) # Weak link
-same_games_dict[34] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[0,1],[1,1],[1,1]]]) # Prisoners
-same_games_dict[38] = np.array([[[4,4],[3,7],[5,0]], [[7,3],[3,3],[5,1]], [[0,5],[1,5],[9,9]]]) # Max
+same_games_dict[31] = np.array([[[8,8],[2,6],[0,5]], [[6,2],[6,6],[2,5]], [[5,0],[5,2],[5,5]]]) # Weak link
+same_games_dict[38] = np.array([[[8,8],[2,9],[1,0]], [[9,2],[3,3],[1,1]], [[0,1],[1,1],[1,1]]]) # Prisoners
+same_games_dict[42] = np.array([[[4,4],[3,7],[5,0]], [[7,3],[3,3],[5,1]], [[0,5],[1,5],[9,9]]]) # Max
 # same_games_dict[3] = np.array([[[8,8],[7,5],[2,4]], [[5,7],[9,9],[0,5]], [[4,2],[5,0],[6,6]]]) # Sym
-same_games_dict[41] = np.array([[[4,4],[4,5],[8,3]], [[5,4],[8,8],[0,9]], [[3,8],[9,0],[1,1]]]) # No pure NE
-same_games_dict[44] = np.array([[[4,4],[4,1],[4,0]], [[1,4],[6,6],[6,4]], [[0,4],[4,6],[9,9]]]) # Stag-hunt
-same_games_dict[50] = np.array([[[5,5],[1,3],[9,0]], [[3,1],[3,3],[9,0]], [[0,9],[0,9],[7,7]]]) # Risky joitnmax with inefficient NE
+# same_games_dict[41] = np.array([[[4,4],[4,5],[8,3]], [[5,4],[8,8],[0,9]], [[3,8],[9,0],[1,1]]]) # No pure NE
+# same_games_dict[44] = np.array([[[4,4],[4,1],[4,0]], [[1,4],[6,6],[6,4]], [[0,4],[4,6],[9,9]]]) # Stag-hunt
+same_games_dict[49] = np.array([[[4,4],[9,1],[1,3]], [[1,9],[8,8],[1,8]], [[3,1],[8,1],[3,3]]]) # Risky joitnmax with inefficient NE
 
 
 
