@@ -12,7 +12,7 @@ An experiment with normal form games
 class Constants(BaseConstants):
     name_in_url = 'game'
     players_per_group = None
-    num_rounds = 6
+    num_rounds = 51
     stakes = c(100)
     size = 3
     ρ_pos = 0.9
